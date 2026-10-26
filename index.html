@@ -13,7 +13,7 @@
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
 
-    <!-- Анти-FOUC -->
+    <!-- Анти-FOUC: применяем тему до отрисовки -->
     <script>
         (function () {
             try {
@@ -815,7 +815,7 @@
                 <div class="form-group">
                     <label for="book-cover-input">Ссылка на обложку</label>
                     <input type="url" id="book-cover-input" name="cover" placeholder="https://…" autocomplete="off">
-                    <div class="form-hint">Необязательно. Подойдёт прямая ссылка на изображение (https).</div>
+                    <div class="form-hint">Необязательно. Можно вставить ссылку или локальный путь.</div>
                 </div>
 
                 <div class="modal-actions">
@@ -903,7 +903,7 @@
                 </div>
                 <div class="form-group">
                     <label for="edit-cover-input">Ссылка на обложку</label>
-                    <input type="url" id="edit-cover-input" placeholder="https://…" autocomplete="off">
+                    <input type="url" id="edit-cover-input" placeholder="https://… или имя файла.jpg" autocomplete="off">
                     <div class="form-hint">Оставьте пустым, чтобы вернуть стандартную обложку.</div>
                 </div>
                 <div class="modal-actions">
@@ -919,93 +919,91 @@
     <script>
         // ═══════════════════════════════════════════════════════
         //  ДАННЫЕ
-        //  Здесь мы используем реальные обложки, найденные по ISBN
-        //  или ID через Open Library (наиболее стабильный бесплатный источник)
         // ═══════════════════════════════════════════════════════
         const BASE_BOOKS = [
-            { id: 1, title: "Война и мир", author: "Лев Толстой", year: 1869, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199232765-L.jpg" },
-            { id: 2, title: "Анна Каренина", author: "Лев Толстой", year: 1877, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780143035008-L.jpg" },
-            { id: 3, title: "Преступление и наказание", author: "Фёдор Достоевский", year: 1866, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780143058144-L.jpg" },
-            { id: 4, title: "Братья Карамазовы", author: "Фёдор Достоевский", year: 1880, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780374528379-L.jpg" },
-            { id: 5, title: "Идиот", author: "Фёдор Достоевский", year: 1869, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780140447927-L.jpg" },
-            { id: 6, title: "Мастер и Маргарита", author: "Михаил Булгаков", year: 1967, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780143108276-L.jpg" },
-            { id: 7, title: "Мёртвые души", author: "Николай Гоголь", year: 1842, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780140448078-L.jpg" },
-            { id: 8, title: "Ревизор", author: "Николай Гоголь", year: 1836, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780143039280-L.jpg" },
-            { id: 9, title: "Отцы и дети", author: "Иван Тургенев", year: 1862, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780141441332-L.jpg" },
-            { id: 10, title: "Обломов", author: "Иван Гончаров", year: 1859, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780140447866-L.jpg" },
-            { id: 11, title: "Герой нашего времени", author: "Михаил Лермонтов", year: 1840, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780141441783-L.jpg" },
-            { id: 12, title: "Тихий Дон", author: "Михаил Шолохов", year: 1940, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780143039785-L.jpg" },
-            { id: 13, title: "Доктор Живаго", author: "Борис Пастернак", year: 1957, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780307386700-L.jpg" },
-            { id: 14, title: "Собачье сердце", author: "Михаил Булгаков", year: 1925, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780140447644-L.jpg" },
-            { id: 15, title: "Белая гвардия", author: "Михаил Булгаков", year: 1925, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780143105169-L.jpg" },
-            { id: 16, title: "Гроза", author: "Александр Островский", year: 1859, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 17, title: "Вишнёвый сад", author: "Антон Чехов", year: 1903, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199535897-L.jpg" },
-            { id: 18, title: "Чайка", author: "Антон Чехов", year: 1896, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199535873-L.jpg" },
-            { id: 19, title: "Дама с собачкой", author: "Антон Чехов", year: 1899, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536191-L.jpg" },
-            { id: 20, title: "Палата № 6", author: "Антон Чехов", year: 1892, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199535521-L.jpg" },
-            { id: 21, title: "Воскресение", author: "Лев Толстой", year: 1899, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536016-L.jpg" },
-            { id: 22, title: "Униженные и оскорблённые", author: "Фёдор Достоевский", year: 1861, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536030-L.jpg" },
-            { id: 23, title: "Бесы", author: "Фёдор Достоевский", year: 1872, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536023-L.jpg" },
-            { id: 24, title: "Записки из подполья", author: "Фёдор Достоевский", year: 1864, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536078-L.jpg" },
-            { id: 25, title: "Рудин", author: "Иван Тургенев", year: 1856, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536047-L.jpg" },
-            { id: 26, title: "Дворянское гнездо", author: "Иван Тургенев", year: 1859, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 27, title: "Тарас Бульба", author: "Николай Гоголь", year: 1835, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 28, title: "Шинель", author: "Николай Гоголь", year: 1842, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 29, title: "Что делать?", author: "Николай Чернышевский", year: 1863, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 30, title: "Кому на Руси жить хорошо", author: "Николай Некрасов", year: 1877, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 31, title: "Евгений Онегин", author: "Александр Пушкин", year: 1833, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 32, title: "Медный всадник", author: "Александр Пушкин", year: 1833, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 33, title: "Борис Годунов", author: "Александр Пушкин", year: 1825, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 34, title: "Демон", author: "Михаил Лермонтов", year: 1841, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 35, title: "Мцыри", author: "Михаил Лермонтов", year: 1840, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 36, title: "Реквием", author: "Анна Ахматова", year: 1963, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 37, title: "Стихи о Прекрасной Даме", author: "Александр Блок", year: 1904, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 38, title: "Облако в штанах", author: "Владимир Маяковский", year: 1915, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 39, title: "Москва кабацкая", author: "Сергей Есенин", year: 1924, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 40, title: "Двенадцать", author: "Александр Блок", year: 1918, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 41, title: "Пикник на обочине", author: "Аркадий и Борис Стругацкие", year: 1972, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 42, title: "Трудно быть богом", author: "Аркадий и Борис Стругацкие", year: 1964, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 43, title: "Град обреченный", author: "Аркадий и Борис Стругацкие", year: 1972, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 44, title: "Солярис", author: "Станислав Лем", year: 1961, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 45, title: "Мы", author: "Евгений Замятин", year: 1924, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 46, title: "Аэлита", author: "Алексей Толстой", year: 1923, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 47, title: "Гиперболоид инженера Гарина", author: "Алексей Толстой", year: 1927, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 48, title: "Человек-амфибия", author: "Александр Беляев", year: 1928, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 49, title: "Голова профессора Доуэля", author: "Александр Беляев", year: 1925, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 50, title: "Дюна", author: "Фрэнк Герберт", year: 1965, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 51, title: "1984", author: "Джордж Оруэлл", year: 1949, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 52, title: "451° по Фаренгейту", author: "Рэй Брэдбери", year: 1953, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 53, title: "О дивный новый мир", author: "Олдос Хаксли", year: 1932, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 54, title: "Марсианин", author: "Энди Вейер", year: 2011, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 55, title: "Автостопом по галактике", author: "Дуглас Адамс", year: 1979, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 56, title: "Нейромант", author: "Уильям Гибсон", year: 1984, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 57, title: "Гарри Поттер и философский камень", author: "Дж. К. Роулинг", year: 1997, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 58, title: "Властелин колец", author: "Дж. Р. Р. Толкин", year: 1954, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 59, title: "Хоббит, или Туда и обратно", author: "Дж. Р. Р. Толкин", year: 1937, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 60, title: "Цветы для Элджернона", author: "Дэниел Киз", year: 1966, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 61, title: "Преступление и наказание (детектив)", author: "Фёдор Достоевский", year: 1866, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 62, title: "Убийство в «Восточном экспрессе»", author: "Агата Кристи", year: 1934, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 63, title: "Десять негритят", author: "Агата Кристи", year: 1939, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 64, title: "Шерлок Холмс: Полное собрание", author: "Артур Конан Дойл", year: 1887, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 65, title: "Девушка с татуировкой дракона", author: "Стиг Ларссон", year: 2005, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 66, title: "Имя розы", author: "Умберто Эко", year: 1980, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 67, title: "Молчание ягнят", author: "Томас Харрис", year: 1988, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 68, title: "Sapiens: Краткая история человечества", author: "Юваль Ной Харари", year: 2011, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 69, title: "Краткая история времени", author: "Стивен Хокинг", year: 1988, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 70, title: "Космос", author: "Карл Саган", year: 1980, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 71, title: "Думай медленно, решай быстро", author: "Даниэль Канеман", year: 2011, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 72, title: "Элегантная Вселенная", author: "Брайан Грин", year: 1999, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 73, title: "Физика невозможного", author: "Митио Каку", year: 2008, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 74, title: "Гёдель, Эшер, Бах", author: "Дуглас Хофштадтер", year: 1979, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 75, title: "История государства Российского", author: "Николай Карамзин", year: 1818, genre: "История", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 76, title: "Ружья, микробы и сталь", author: "Джаред Даймонд", year: 1997, genre: "История", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 77, title: "История России с древнейших времён", author: "Сергей Соловьёв", year: 1851, genre: "История", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 78, title: "Так говорил Заратустра", author: "Фридрих Ницше", year: 1883, genre: "Философия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 79, title: "Посторонний", author: "Альбер Камю", year: 1942, genre: "Философия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 80, title: "Миф о Сизифе", author: "Альбер Камю", year: 1942, genre: "Философия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 81, title: "Государство", author: "Платон", year: -380, genre: "Философия", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 82, title: "Стив Джобс", author: "Уолтер Айзексон", year: 2011, genre: "Биография", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" },
-            { id: 83, title: "Леонардо да Винчи", author: "Уолтер Айзексон", year: 2017, genre: "Биография", coverUrl: "https://covers.openlibrary.org/b/isbn/9780199536054-L.jpg" }
+            { id: 1, title: "Война и мир", author: "Лев Толстой", year: 1869, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 2, title: "Анна Каренина", author: "Лев Толстой", year: 1877, genre: "Классика", coverUrl: "Анна_Каренина.jpg" },
+            { id: 3, title: "Преступление и наказание", author: "Фёдор Достоевский", year: 1866, genre: "Классика", coverUrl: "Преступление_и_Наказание.jpg" },
+            { id: 4, title: "Братья Карамазовы", author: "Фёдор Достоевский", year: 1880, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL17734360W-L.jpg" },
+            { id: 5, title: "Идиот", author: "Фёдор Достоевский", year: 1869, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL3434283M-L.jpg" },
+            { id: 6, title: "Мастер и Маргарита", author: "Михаил Булгаков", year: 1967, genre: "Классика", coverUrl: "Мастер_и_Маргарита.jpg" },
+            { id: 7, title: "Мёртвые души", author: "Николай Гоголь", year: 1842, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL37044593M-L.jpg" },
+            { id: 8, title: "Ревизор", author: "Николай Гоголь", year: 1836, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL18582259M-L.jpg" },
+            { id: 9, title: "Отцы и дети", author: "Иван Тургенев", year: 1862, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL27931575M-L.jpg" },
+            { id: 10, title: "Обломов", author: "Иван Гончаров", year: 1859, genre: "Классика", coverUrl: "Обломов.jpg" },
+            { id: 11, title: "Герой нашего времени", author: "Михаил Лермонтов", year: 1840, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL27159377M-L.jpg" },
+            { id: 12, title: "Тихий Дон", author: "Михаил Шолохов", year: 1940, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 13, title: "Доктор Живаго", author: "Борис Пастернак", year: 1957, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL34811727M-L.jpg" },
+            { id: 14, title: "Собачье сердце", author: "Михаил Булгаков", year: 1925, genre: "Классика", coverUrl: "Собачье_Сердце.jpg" },
+            { id: 15, title: "Белая гвардия", author: "Михаил Булгаков", year: 1925, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL26461512M-L.jpg" },
+            { id: 16, title: "Гроза", author: "Александр Островский", year: 1859, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL18582259M-L.jpg" },
+            { id: 17, title: "Вишнёвый сад", author: "Антон Чехов", year: 1903, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL448622W-L.jpg" },
+            { id: 18, title: "Чайка", author: "Антон Чехов", year: 1896, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL448622W-L.jpg" },
+            { id: 19, title: "Дама с собачкой", author: "Антон Чехов", year: 1899, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL448622W-L.jpg" },
+            { id: 20, title: "Палата № 6", author: "Антон Чехов", year: 1892, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL448622W-L.jpg" },
+            { id: 21, title: "Воскресение", author: "Лев Толстой", year: 1899, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 22, title: "Униженные и оскорблённые", author: "Фёдор Достоевский", year: 1861, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL3434283M-L.jpg" },
+            { id: 23, title: "Бесы", author: "Фёдор Достоевский", year: 1872, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL3434283M-L.jpg" },
+            { id: 24, title: "Записки из подполья", author: "Фёдор Достоевский", year: 1864, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL3434283M-L.jpg" },
+            { id: 25, title: "Рудин", author: "Иван Тургенев", year: 1856, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL27931575M-L.jpg" },
+            { id: 26, title: "Дворянское гнездо", author: "Иван Тургенев", year: 1859, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL27931575M-L.jpg" },
+            { id: 27, title: "Тарас Бульба", author: "Николай Гоголь", year: 1835, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL37044593M-L.jpg" },
+            { id: 28, title: "Шинель", author: "Николай Гоголь", year: 1842, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL37044593M-L.jpg" },
+            { id: 29, title: "Что делать?", author: "Николай Чернышевский", year: 1863, genre: "Классика", coverUrl: "https://covers.openlibrary.org/b/olid/OL18582259M-L.jpg" },
+            { id: 30, title: "Кому на Руси жить хорошо", author: "Николай Некрасов", year: 1877, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 31, title: "Евгений Онегин", author: "Александр Пушкин", year: 1833, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 32, title: "Медный всадник", author: "Александр Пушкин", year: 1833, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 33, title: "Борис Годунов", author: "Александр Пушкин", year: 1825, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 34, title: "Демон", author: "Михаил Лермонтов", year: 1841, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 35, title: "Мцыри", author: "Михаил Лермонтов", year: 1840, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 36, title: "Реквием", author: "Анна Ахматова", year: 1963, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 37, title: "Стихи о Прекрасной Даме", author: "Александр Блок", year: 1904, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 38, title: "Облако в штанах", author: "Владимир Маяковский", year: 1915, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 39, title: "Москва кабацкая", author: "Сергей Есенин", year: 1924, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 40, title: "Двенадцать", author: "Александр Блок", year: 1918, genre: "Поэзия", coverUrl: "https://covers.openlibrary.org/b/olid/OL13638431M-L.jpg" },
+            { id: 41, title: "Пикник на обочине", author: "Аркадий и Борис Стругацкие", year: 1972, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 42, title: "Трудно быть богом", author: "Аркадий и Борис Стругацкие", year: 1964, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 43, title: "Град обреченный", author: "Аркадий и Борис Стругацкие", year: 1972, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 44, title: "Солярис", author: "Станислав Лем", year: 1961, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 45, title: "Мы", author: "Евгений Замятин", year: 1924, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 46, title: "Аэлита", author: "Алексей Толстой", year: 1923, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 47, title: "Гиперболоид инженера Гарина", author: "Алексей Толстой", year: 1927, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 48, title: "Человек-амфибия", author: "Александр Беляев", year: 1928, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 49, title: "Голова профессора Доуэля", author: "Александр Беляев", year: 1925, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 50, title: "Дюна", author: "Фрэнк Герберт", year: 1965, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 51, title: "1984", author: "Джордж Оруэлл", year: 1949, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 52, title: "451° по Фаренгейту", author: "Рэй Брэдбери", year: 1953, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 53, title: "О дивный новый мир", author: "Олдос Хаксли", year: 1932, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 54, title: "Марсианин", author: "Энди Вейер", year: 2011, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 55, title: "Автостопом по галактике", author: "Дуглас Адамс", year: 1979, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 56, title: "Нейромант", author: "Уильям Гибсон", year: 1984, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 57, title: "Гарри Поттер и философский камень", author: "Дж. К. Роулинг", year: 1997, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 58, title: "Властелин колец", author: "Дж. Р. Р. Толкин", year: 1954, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 59, title: "Хоббит, или Туда и обратно", author: "Дж. Р. Р. Толкин", year: 1937, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 60, title: "Цветы для Элджернона", author: "Дэниел Киз", year: 1966, genre: "Фантастика", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 61, title: "Преступление и наказание (детектив)", author: "Фёдор Достоевский", year: 1866, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/olid/OL3434283M-L.jpg" },
+            { id: 62, title: "Убийство в «Восточном экспрессе»", author: "Агата Кристи", year: 1934, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 63, title: "Десять негритят", author: "Агата Кристи", year: 1939, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 64, title: "Шерлок Холмс: Полное собрание", author: "Артур Конан Дойл", year: 1887, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 65, title: "Девушка с татуировкой дракона", author: "Стиг Ларссон", year: 2005, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 66, title: "Имя розы", author: "Умберто Эко", year: 1980, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 67, title: "Молчание ягнят", author: "Томас Харрис", year: 1988, genre: "Детектив", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 68, title: "Sapiens: Краткая история человечества", author: "Юваль Ной Харари", year: 2011, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 69, title: "Краткая история времени", author: "Стивен Хокинг", year: 1988, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 70, title: "Космос", author: "Карл Саган", year: 1980, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 71, title: "Думай медленно, решай быстро", author: "Даниэль Канеман", year: 2011, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 72, title: "Элегантная Вселенная", author: "Брайан Грин", year: 1999, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 73, title: "Физика невозможного", author: "Митио Каку", year: 2008, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 74, title: "Гёдель, Эшер, Бах", author: "Дуглас Хофштадтер", year: 1979, genre: "Научпоп", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 75, title: "История государства Российского", author: "Николай Карамзин", year: 1818, genre: "История", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 76, title: "Ружья, микробы и сталь", author: "Джаред Даймонд", year: 1997, genre: "История", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 77, title: "История России с древнейших времён", author: "Сергей Соловьёв", year: 1851, genre: "История", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 78, title: "Так говорил Заратустра", author: "Фридрих Ницше", year: 1883, genre: "Философия", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 79, title: "Посторонний", author: "Альбер Камю", year: 1942, genre: "Философия", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 80, title: "Миф о Сизифе", author: "Альбер Камю", year: 1942, genre: "Философия", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 81, title: "Государство", author: "Платон", year: -380, genre: "Философия", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 82, title: "Стив Джобс", author: "Уолтер Айзексон", year: 2011, genre: "Биография", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" },
+            { id: 83, title: "Леонардо да Винчи", author: "Уолтер Айзексон", year: 2017, genre: "Биография", coverUrl: "https://covers.openlibrary.org/b/olid/OL326262W-L.jpg" }
         ];
 
         const BOOK_EMOJIS = ['📕', '📗', '📘', '📙'];
@@ -1207,34 +1205,16 @@
         }
 
         // ═══════════════════════════════════════════════════════
-        //  ОБЛОЖКИ (с умным фолбэком через OpenLibrary)
+        //  ОБЛОЖКИ
         // ═══════════════════════════════════════════════════════
         function sanitizeCoverUrl(url) {
             const u = String(url || '').trim();
             if (!u) return '';
             if (/^data:image\//i.test(u)) return u;
-            if (/^https:\/\//i.test(u)) return u;
+            if (/^https?:\/\//i.test(u)) return u;
+            // Разрешаем относительные пути к файлам картинок
+            if (/\.(jpe?g|png|webp|gif|svg)$/i.test(u)) return u;
             return '';
-        }
-
-        // Если картинка не загрузилась, пробуем подтянуть через OpenLibrary API
-        // по названию и автору.
-        async function fetchCoverFallback(book, imgElement) {
-            try {
-                // Open Library Search API
-                const q = encodeURIComponent(`${book.title} ${book.author}`);
-                const res = await fetch(`https://openlibrary.org/search.json?q=${q}&limit=1`);
-                const data = await res.json();
-                if (data.docs && data.docs.length > 0 && data.docs[0].cover_i) {
-                    const coverId = data.docs[0].cover_i;
-                    const newUrl = `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`;
-                    imgElement.src = newUrl;
-                    return true;
-                }
-            } catch (e) {
-                console.warn('Не удалось найти запасную обложку', e);
-            }
-            return false;
         }
 
         // ═══════════════════════════════════════════════════════
@@ -1321,11 +1301,11 @@
             const safeUrl = sanitizeCoverUrl(book.coverUrl);
             const emojiHtml = `<span class="book-cover-emoji" role="img" aria-label="Обложка книги ${escapeAttr(book.title)}">${emoji}</span>`;
             if (safeUrl) {
-                // Картинка с обработчиком onerror, который попытается найти запасную обложку
+                // Если картинка загрузилась, но она меньше 5 пикселей (заглушка OpenLibrary), скрываем её
                 return `<img class="book-cover-img" src="${escapeAttr(safeUrl)}" alt="Обложка книги «${escapeAttr(book.title)}»" 
-                        loading="lazy" referrerpolicy="no-referrer" 
-                        onload="this.classList.add('loaded')"
-                        onerror="this.style.display='none'; fetchCoverFallback(${JSON.stringify(book).replace(/"/g, '&quot;')}, this)">` + emojiHtml;
+                        loading="lazy" 
+                        onload="if(this.naturalWidth > 5) { this.classList.add('loaded'); } else { this.style.display='none'; }"
+                        onerror="this.style.display='none'">` + emojiHtml;
             }
             return emojiHtml;
         }
