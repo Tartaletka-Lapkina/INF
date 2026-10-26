@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Домашняя Библиотека | Личный Книжный Архив</title>
+    <meta name="description" content="Уютная коллекция книг: от классики до современной фантастики. Личный архив и рекомендации для чтения.">
+    
+    <meta property="og:title" content="Домашняя Библиотека">
+    <meta property="og:description" content="Коллекция историй, знаний и вдохновения.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1200&q=80">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Library",
+      "name": "Домашняя Библиотека HomeLib",
+      "description": "Уютная коллекция книг: от классики до современной фантастики.",
+      "url": "https://homelib.ru",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Книжная, д. 42",
+        "addressLocality": "Москва",
+        "addressCountry": "RU"
+      }
+    }
+    </script>
+
+    <style>
+        :root {
+            --color-bg: #FDF2F4;
+            --color-bg-alt: #FBEAEE;
+            --color-surface: #FFFFFF;
+            --color-text-main: #3A2830;
+            --color-text-muted: #7A5F68;
+            --color-primary: #A03A5C;
+            --color-primary-light: #C4577A;
+            --color-accent: #6B7A3F;
+            --color-accent-light: #8A9A5C;
+            --color-border: #F0D8DE;
+            --color-like: #E63946;
+            --color-read: #2A9D8F;
+            
+            --font-serif: "Georgia", "Times New Roman", serif;
+            --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+            --container-width: 1200px;
+            --header-height: 70px;
+            --border-radius-card: 16px;
+            --border-radius-btn: 999px;
+            
+            --shadow-sm: 0 2px 4px rgba(160, 58, 92, 0.06);
+            --shadow-md: 0 8px 16px rgba(160, 58, 92, 0.10);
+            --shadow-lg: 0 16px 32px rgba(160, 58, 92, 0.14);
+            --shadow-xl: 0 24px 48px rgba(160, 58, 92, 0.18);
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-bg: #1F1719;
+                --color-bg-alt: #2A1F23;
+                --color-surface: #2A2022;
+                --color-text-main: #EFE0E5;
+                --color-text-muted: #B8A0A8;
+                --color-primary: #E28AA8;
+                --color-primary-light: #EFA8C0;
+                --color-accent: #A8C080;
+                --color-accent-light: #C0D49A;
+                --color-border: #3F2E33;
+                --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+                --shadow-md: 0 8px 16px rgba(0,0,0,0.4);
+                --shadow-lg: 0 16px 32px rgba(0,0,0,0.5);
+                --shadow-xl: 0 24px 48px rgba(0,0,0,0.6);
+            }
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body { 
+            font-family: var(--font-sans); 
+            background-color: var(--color-bg); 
+            color: var(--color-text-main); 
+            line-height: 1.6; 
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='900' viewBox='0 0 900 900'><g fill='none' stroke='%23A03A5C' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round' opacity='0.35'><g transform='translate(80,120) rotate(-7)'><path d='M0 0 h70 v95 h-70 z M0 16 h70 M12 0 v95 M58 0 v95'/><path d='M6 8 h58' stroke-dasharray='3 5'/></g><g transform='translate(620,380) rotate(6)'><path d='M0 0 h64 v88 h-64 z M0 15 h64 M11 0 v88 M53 0 v88'/><path d='M5 7 h54' stroke-dasharray='3 5'/></g><g transform='translate(280,680) rotate(-4)'><path d='M0 0 h75 v100 h-75 z M0 17 h75 M13 0 v100 M62 0 v100'/></g></g></svg>");
+            background-size: 900px 900px;
+            background-repeat: repeat;
+            background-position: 0 0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body::before {
+                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='900' viewBox='0 0 900 900'><g fill='none' stroke='%23E28AA8' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'><g transform='translate(80,120) rotate(-7)'><path d='M0 0 h70 v95 h-70 z M0 16 h70 M12 0 v95 M58 0 v95'/><path d='M6 8 h58' stroke-dasharray='3 5'/></g><g transform='translate(620,380) rotate(6)'><path d='M0 0 h64 v88 h-64 z M0 15 h64 M11 0 v88 M53 0 v88'/><path d='M5 7 h54' stroke-dasharray='3 5'/></g><g transform='translate(280,680) rotate(-4)'><path d='M0 0 h75 v100 h-75 z M0 17 h75 M13 0 v100 M62 0 v100'/></g></g></svg>");
+            }
+        }
+
+        header, main, footer { position: relative; z-index: 1; }
+
+        img { max-width: 100%; height: auto; display: block; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+
+        .container { width: 100%; max-width: var(--container-width); margin: 0 auto; padding: 0 1.25rem; }
+        @media (min-width: 768px) { .container { padding: 0 2rem; } }
+        .section-padding { padding: clamp(3rem, 8vw, 6rem) 0; }
+        .text-center { text-align: center; }
+
+        h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+        h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); color: var(--color-text-main); }
+        p { margin-bottom: 1rem; color: var(--color-text-muted); }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 0.875rem 1.75rem; border-radius: var(--border-radius-btn);
+            font-weight: 600; cursor: pointer; border: none; transition: var(--transition);
+            font-size: 1rem; min-height: 48px; touch-action: manipulation;
+        }
+        .btn-primary { background-color: var(--color-primary); color: #fff; }
+        .btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .btn-outline { background-color: transparent; border: 2px solid var(--color-primary); color: var(--color-primary); }
+        .btn-outline:hover { background-color: var(--color-primary); color: #fff; }
+        .btn-sm { padding: 0.6rem 1.25rem; min-height: 42px; font-size: 0.9rem; }
+
+        header {
+            position: sticky; top: 0; z-index: 1000;
+            background-color: rgba(253, 242, 244, 0.95);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--color-border); height: var(--header-height);
+            display: flex; align-items: center;
+            box-shadow: 0 1px 0 rgba(160, 58, 92, 0.06);
+        }
+        @media (prefers-color-scheme: dark) { header { background-color: rgba(31, 23, 25, 0.95); } }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .logo { font-family: var(--font-serif); font-size: 1.5rem; font-weight: bold; color: var(--color-primary); display: flex; align-items: center; gap: 0.5rem; z-index: 1001; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { font-weight: 500; position: relative; padding: 0.5rem 0; min-height: 44px; display: flex; align-items: center; }
+        .nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0; background-color: var(--color-accent); transition: width 0.3s; }
+        .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+        .nav-links a.active { color: var(--color-accent); }
+
+        .burger { display: none; cursor: pointer; background: none; border: none; padding: 0.5rem; z-index: 1001; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
+        .burger svg { width: 28px; height: 28px; stroke: var(--color-text-main); }
+
+        @media (max-width: 768px) {
+            .burger { display: flex; }
+            .nav-links {
+                position: fixed; top: 0; right: 0; height: 100vh; width: 80%; max-width: 300px;
+                background-color: var(--color-bg); flex-direction: column; align-items: flex-start;
+                justify-content: flex-start; padding-top: calc(var(--header-height) + 2rem); padding-left: 2rem;
+                gap: 1.5rem; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                border-left: 1px solid var(--color-border); box-shadow: -5px 0 15px rgba(0,0,0,0.1); z-index: 1000;
+            }
+            .nav-links.active { transform: translateX(0); }
+            .nav-links a { font-size: 1.25rem; width: 100%; }
+            .nav-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
+            .nav-overlay.active { opacity: 1; visibility: visible; }
+        }
+
+        #hero {
+            position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center;
+            background: linear-gradient(rgba(58, 40, 48, 0.72), rgba(58, 40, 48, 0.85)),
+                url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1920&q=80');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: #fff; padding: 2rem 1rem; overflow: hidden;
+        }
+        .floating-books { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 1; }
+        .floating-book { position: absolute; font-size: clamp(2rem, 5vw, 4rem); opacity: 0.15; animation: floatBook 12s infinite ease-in-out; }
+        .book-1 { top: 15%; left: 8%; animation-delay: 0s; }
+        .book-2 { top: 60%; right: 10%; animation-delay: 3s; }
+        .book-3 { bottom: 20%; left: 5%; animation-delay: 6s; }
+        .book-4 { top: 25%; right: 15%; animation-delay: 9s; }
+        @keyframes floatBook { 0%, 100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-25px) rotate(5deg); } }
+
+        .hero-content {
+            max-width: 800px; z-index: 2; position: relative; padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.08); border-radius: 24px;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease forwards;
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem); margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #fce4ec 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3)); letter-spacing: -1px;
+        }
+        .hero-subtitle { font-size: clamp(1.1rem, 2.5vw, 1.4rem); margin-bottom: 2.5rem; opacity: 0.95; font-weight: 300; color: #f0f0f0; line-height: 1.6; }
+        .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn-hero-light { background-color: #fff; color: var(--color-text-main); }
+        .btn-hero-light:hover { background-color: #fce4ec; transform: translateY(-2px); }
+
+        .hero-divider { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 2; animation: bounce 2s infinite; opacity: 0.6; }
+        @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-10px); } }
+
+        .section-panel {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(240, 216, 222, 0.9);
+            border-radius: 24px;
+            padding: clamp(1.75rem, 4vw, 3rem);
+            box-shadow: 0 8px 32px rgba(160, 58, 92, 0.06);
+        }
+        @media (prefers-color-scheme: dark) {
+            .section-panel { background: rgba(42, 32, 34, 0.82); border-color: rgba(63, 46, 51, 0.9); }
+        }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
+        @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
+        .stat-card { background: var(--color-surface); padding: 1.5rem 1rem; border-radius: var(--border-radius-card); box-shadow: var(--shadow-sm); text-align: center; transition: var(--transition); border: 1px solid var(--color-border); }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--color-primary-light); }
+        .stat-number { font-family: var(--font-serif); font-size: clamp(1.75rem, 4vw, 2.5rem); color: var(--color-primary); font-weight: bold; display: block; margin-bottom: 0.5rem; }
+        .stat-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); }
+
+        .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
+        @media (min-width: 480px) { .categories-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 768px) { .categories-grid { grid-template-columns: repeat(5, 1fr); gap: 1.5rem; } }
+        .category-card { background: var(--color-surface); padding: 1.5rem 1rem; border-radius: var(--border-radius-card); text-align: center; border: 1px solid var(--color-border); transition: var(--transition); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+        .category-card:hover { border-color: var(--color-primary); background-color: rgba(160, 58, 92, 0.05); transform: translateY(-4px); }
+        .cat-icon { width: 40px; height: 40px; fill: var(--color-text-muted); transition: var(--transition); }
+        @media (min-width: 768px) { .cat-icon { width: 48px; height: 48px; } }
+        .category-card:hover .cat-icon { fill: var(--color-primary); transform: scale(1.1); }
+        .category-card h3 { font-size: 0.95rem; margin: 0; font-family: var(--font-sans); font-weight: 600; }
+
+        .filters-bar {
+            display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;
+            padding: 1.25rem; background: var(--color-surface); border-radius: var(--border-radius-card);
+            border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);
+        }
+        .filter-group { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+        .filter-group-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); margin-right: 0.5rem; min-width: 90px; }
+        .filter-btn {
+            padding: 0.5rem 1.1rem; border-radius: var(--border-radius-btn); border: 1px solid var(--color-border);
+            background: var(--color-bg); color: var(--color-text-muted); font-size: 0.85rem; font-weight: 500;
+            cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 0.4rem;
+        }
+        .filter-btn:hover { border-color: var(--color-primary); color: var(--color-primary); transform: translateY(-1px); }
+        .filter-btn.active { background-color: var(--color-primary); color: #fff; border-color: var(--color-primary); box-shadow: var(--shadow-sm); }
+        .filter-btn.status-read.active { background-color: var(--color-read); border-color: var(--color-read); }
+        .filter-btn.status-like.active { background-color: var(--color-like); border-color: var(--color-like); }
+        .filter-btn .count { font-size: 0.75rem; opacity: 0.8; background: rgba(0,0,0,0.08); padding: 0.1rem 0.4rem; border-radius: 999px; }
+        .filter-btn.active .count { background: rgba(255,255,255,0.25); }
+
+        .catalog-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+        .results-count { font-size: 0.9rem; color: var(--color-text-muted); }
+        .results-count strong { color: var(--color-text-main); }
+        .catalog-actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+        .reset-filters { background: none; border: none; color: var(--color-primary); cursor: pointer; font-size: 0.9rem; font-weight: 600; padding: 0.5rem 0.75rem; border-radius: 8px; transition: var(--transition); }
+        .reset-filters:hover { background: rgba(160, 58, 92, 0.08); }
+
+        .books-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem; }
+        @media (min-width: 480px) { .books-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 768px) { .books-grid { grid-template-columns: repeat(4, 1fr); gap: 1.75rem; } }
+        
+        .book-card {
+            background: var(--color-surface); border-radius: var(--border-radius-card); overflow: hidden;
+            box-shadow: var(--shadow-sm); transition: var(--transition); display: flex; flex-direction: column;
+            border: 1px solid var(--color-border); animation: fadeIn 0.5s ease forwards; position: relative;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .book-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-xl); border-color: transparent; }
+        .book-card.is-read { opacity: 0.9; }
+        .book-card.is-read .book-cover-wrapper::after {
+            content: ''; position: absolute; inset: 0; background: rgba(42, 157, 143, 0.1);
+        }
+        .book-card.is-user-added .book-cover-wrapper::before {
+            content: '★'; position: absolute; bottom: 8px; right: 10px;
+            font-size: 0.9rem; color: rgba(160, 58, 92, 0.65); z-index: 3;
+            filter: drop-shadow(0 1px 2px rgba(255,255,255,0.6));
+        }
+
+        .book-cover-wrapper { position: relative; padding-top: 145%; overflow: hidden; }
+        .book-cover-emoji {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: clamp(3rem, 10vw, 5rem);
+            transition: transform 0.6s ease;
+        }
+        .book-card:hover .book-cover-emoji { transform: scale(1.08) rotate(-3deg); }
+
+        .cover-tone-0  .book-cover-emoji { background: linear-gradient(135deg, #FCE4EC, #F8C8D8); }
+        .cover-tone-1  .book-cover-emoji { background: linear-gradient(135deg, #E0F0F8, #C0DCEF); }
+        .cover-tone-2  .book-cover-emoji { background: linear-gradient(135deg, #E8F5E0, #CCE5BC); }
+        .cover-tone-3  .book-cover-emoji { background: linear-gradient(135deg, #FFF1D6, #F5DEB0); }
+        .cover-tone-4  .book-cover-emoji { background: linear-gradient(135deg, #ECE0F8, #D4C0EC); }
+        .cover-tone-5  .book-cover-emoji { background: linear-gradient(135deg, #FCE4D6, #F5C8B0); }
+        .cover-tone-6  .book-cover-emoji { background: linear-gradient(135deg, #D8F0EA, #B4E0D4); }
+        .cover-tone-7  .book-cover-emoji { background: linear-gradient(135deg, #F8D8E0, #EFB8C8); }
+        .cover-tone-8  .book-cover-emoji { background: linear-gradient(135deg, #DED8F5, #C0B8E8); }
+        .cover-tone-9  .book-cover-emoji { background: linear-gradient(135deg, #FDF2D0, #F0E0A0); }
+        .cover-tone-10 .book-cover-emoji { background: linear-gradient(135deg, #D4ECF5, #A8D8EC); }
+        .cover-tone-11 .book-cover-emoji { background: linear-gradient(135deg, #F8E4D0, #EEC8A8); }
+        .cover-tone-12 .book-cover-emoji { background: linear-gradient(135deg, #E5F0F0, #C0DCDC); }
+        .cover-tone-13 .book-cover-emoji { background: linear-gradient(135deg, #F5E0EC, #E8C0D8); }
+        .cover-tone-14 .book-cover-emoji { background: linear-gradient(135deg, #E0EBD8, #C0D4B4); }
+        .cover-tone-15 .book-cover-emoji { background: linear-gradient(135deg, #F0E8D8, #DCCCB0); }
+
+        .book-badges { position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px; z-index: 3; }
+        .badge {
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 0.25rem 0.55rem; border-radius: 999px; color: #fff; display: inline-flex; align-items: center; gap: 0.25rem;
+            backdrop-filter: blur(4px); box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .badge-read { background: rgba(42, 157, 143, 0.92); }
+        .badge-like { background: rgba(230, 57, 70, 0.92); }
+
+        .book-actions {
+            position: absolute; top: 8px; right: 8px; display: flex; flex-direction: column; gap: 6px; z-index: 4;
+            opacity: 0; transform: translateX(10px); transition: var(--transition);
+        }
+        .book-card:hover .book-actions, .book-card:focus-within .book-actions { opacity: 1; transform: translateX(0); }
+        @media (hover: none) { .book-actions { opacity: 1; transform: translateX(0); } }
+
+        .action-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.95); box-shadow: var(--shadow-md);
+            transition: var(--transition); color: var(--color-text-muted);
+        }
+        .action-btn:hover { transform: scale(1.15); }
+        .action-btn svg { width: 18px; height: 18px; fill: currentColor; transition: var(--transition); }
+        .action-btn.like-btn:hover { color: var(--color-like); }
+        .action-btn.like-btn.active { color: var(--color-like); }
+        .action-btn.like-btn.active svg { fill: var(--color-like); }
+        .action-btn.read-btn:hover { color: var(--color-read); }
+        .action-btn.read-btn.active { color: #fff; background: var(--color-read); }
+        .action-btn.read-btn.active svg { fill: #fff; }
+        .action-btn.delete-btn:hover { color: #C1272D; }
+        .action-btn.delete-btn svg { width: 16px; height: 16px; }
+
+        .book-info { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; }
+        @media (min-width: 768px) { .book-info { padding: 1.25rem; } }
+        
+        .book-title {
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+            font-family: var(--font-serif); font-size: 1rem; margin-bottom: 0.25rem; color: var(--color-text-main); line-height: 1.3;
+        }
+        @media (min-width: 768px) { .book-title { font-size: 1.1rem; } }
+        .book-author { font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 0.6rem; }
+        .book-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: auto; flex-wrap: wrap; }
+        .book-year { display: inline-block; background: rgba(107, 122, 63, 0.1); color: var(--color-accent); padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600; }
+        .book-genre { display: inline-block; background: rgba(160, 58, 92, 0.08); color: var(--color-primary); padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600; }
+
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 3rem; flex-wrap: wrap; }
+        .page-btn {
+            min-width: 44px; height: 44px; padding: 0 0.75rem; border-radius: 12px;
+            border: 1px solid var(--color-border); background: var(--color-surface);
+            color: var(--color-text-main); font-weight: 600; font-size: 0.95rem;
+            cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center;
+        }
+        .page-btn:hover:not(:disabled) { border-color: var(--color-primary); color: var(--color-primary); transform: translateY(-2px); }
+        .page-btn.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); box-shadow: var(--shadow-md); }
+        .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .page-btn.nav-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        .page-dots { padding: 0 0.5rem; color: var(--color-text-muted); }
+
+        .benefits-list { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 2rem; }
+        @media (min-width: 768px) { .benefits-list { grid-template-columns: repeat(3, 1fr); } }
+        .benefit-item { display: flex; gap: 1rem; align-items: flex-start; }
+        .benefit-icon-box { background-color: rgba(160, 58, 92, 0.1); color: var(--color-primary); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .benefit-icon-box svg { width: 24px; height: 24px; fill: currentColor; }
+
+        .contact-layout { display: grid; grid-template-columns: 1fr; gap: 3rem; }
+        @media (min-width: 768px) { .contact-layout { grid-template-columns: 1fr 1fr; } }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
+        input, textarea, select { 
+            width: 100%; padding: 0.875rem 1rem; border: 1px solid var(--color-border); border-radius: 10px; 
+            background-color: var(--color-surface); color: var(--color-text-main); font-family: var(--font-sans); 
+            font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s; min-height: 48px; 
+        }
+        textarea { min-height: 120px; resize: vertical; }
+        select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237A5F68' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(160, 58, 92, 0.12); }
+        
+        .form-success { display: none; text-align: center; padding: 2rem; background: rgba(107, 122, 63, 0.1); border-radius: 12px; border: 1px solid var(--color-accent); animation: fadeIn 0.4s ease; }
+
+        .social-links { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .social-link { width: 48px; height: 48px; border-radius: 50%; background-color: var(--color-surface); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+        .social-link:hover { background-color: var(--color-primary); border-color: var(--color-primary); transform: translateY(-2px); }
+        .social-link svg { width: 22px; height: 22px; fill: var(--color-text-main); transition: fill 0.2s; }
+        .social-link:hover svg { fill: #fff; }
+
+        footer { background-color: #3A2830; color: #EFE0E5; padding: 3rem 0; margin-top: 4rem; position: relative; z-index: 1; }
+        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; text-align: center; }
+        .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .footer-links a { padding: 0.5rem; min-height: 44px; display: flex; align-items: center; }
+        .footer-links a:hover { color: #fff; text-decoration: underline; }
+        .copyright { font-size: 0.85rem; opacity: 0.7; }
+
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 2000;
+            background: rgba(58, 40, 48, 0.55);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 1.25rem; opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .modal {
+            background: var(--color-surface); border-radius: 20px;
+            padding: clamp(1.5rem, 4vw, 2.5rem); max-width: 520px; width: 100%;
+            max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 24px 60px rgba(58, 40, 48, 0.35);
+            border: 1px solid var(--color-border);
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .modal-overlay.active .modal { transform: scale(1) translateY(0); }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; gap: 1rem; }
+        .modal-title { font-family: var(--font-serif); font-size: 1.5rem; margin: 0; color: var(--color-text-main); }
+        .modal-subtitle { font-size: 0.85rem; color: var(--color-text-muted); margin: 0.25rem 0 0; }
+        .modal-close {
+            width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--color-border);
+            background: var(--color-bg); cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: var(--transition); flex-shrink: 0; color: var(--color-text-muted);
+        }
+        .modal-close:hover { background: var(--color-primary); color: #fff; border-color: var(--color-primary); transform: rotate(90deg); }
+        .modal-close svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 480px) { .modal-row { grid-template-columns: 1fr; } }
+
+        .modal-actions { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+        .modal-actions .btn { flex: 1; }
+
+        .form-hint { font-size: 0.78rem; color: var(--color-text-muted); margin-top: 0.35rem; }
+
+        .field-error { border-color: var(--color-like) !important; box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.12) !important; }
+        .error-message { font-size: 0.78rem; color: var(--color-like); margin-top: 0.35rem; display: none; }
+        .error-message.visible { display: block; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                HomeLib
+            </a>
+            <button class="burger" aria-label="Открыть меню" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <nav class="nav-links">
+                <a href="#about">О библиотеке</a>
+                <a href="#categories">Жанры</a>
+                <a href="#featured">Каталог</a>
+                <a href="#contact">Контакты</a>
+            </nav>
+            <div class="nav-overlay"></div>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="floating-books">
+                <div class="floating-book book-1">📕</div>
+                <div class="floating-book book-2">📗</div>
+                <div class="floating-book book-3">📘</div>
+                <div class="floating-book book-4">📙</div>
+            </div>
+            <div class="hero-content">
+                <h1 class="hero-title">Ваш личный книжный уголок</h1>
+                <p class="hero-subtitle">Коллекция историй, знаний и вдохновения. Откройте для себя мир между страниц.</p>
+                <div class="hero-buttons">
+                    <a href="#featured" class="btn btn-primary">Смотреть каталог</a>
+                    <a href="#about" class="btn btn-hero-light">Подробнее</a>
+                </div>
+            </div>
+            <div class="hero-divider">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+            </div>
+        </section>
+
+        <section id="about" class="section-padding">
+            <div class="container">
+                <div class="section-panel">
+                    <div class="text-center" style="max-width: 700px; margin: 0 auto;">
+                        <h2>О нашей коллекции</h2>
+                        <p>Эта библиотека — результат десятилетия собирательства. Здесь нет места случайным книгам: каждый том был выбран с любовью и ожиданием момента, когда его раскроют.</p>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><span class="stat-number" id="stat-books">0</span><span class="stat-label">Книг</span></div>
+                        <div class="stat-card"><span class="stat-number" id="stat-authors">0</span><span class="stat-label">Авторов</span></div>
+                        <div class="stat-card"><span class="stat-number">12</span><span class="stat-label">Лет истории</span></div>
+                        <div class="stat-card"><span class="stat-number" id="stat-genres">0</span><span class="stat-label">Жанров</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="categories" class="section-padding" style="padding-top: 0;">
+            <div class="container">
+                <div class="section-panel">
+                    <h2 class="text-center">Жанровое разнообразие</h2>
+                    <div class="categories-grid" id="categories-grid"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="featured" class="section-padding" style="padding-top: 0;">
+            <div class="container">
+                <div class="section-panel">
+                    <h2 class="text-center">Каталог библиотеки</h2>
+                    <p class="text-center" style="max-width: 600px; margin: 0 auto 2rem;">Используйте фильтры, чтобы найти книгу по душе. Отмечайте прочитанное и добавляйте в избранное.</p>
+                    
+                    <div class="filters-bar">
+                        <div class="filter-group">
+                            <span class="filter-group-label">Жанр</span>
+                            <button class="filter-btn genre-filter active" data-genre="all">Все</button>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-group-label">Статус</span>
+                            <button class="filter-btn status-filter active" data-status="all">Все книги</button>
+                            <button class="filter-btn status-filter status-read" data-status="read">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                                Прочитано <span class="count" id="count-read">0</span>
+                            </button>
+                            <button class="filter-btn status-filter status-like" data-status="like">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                Избранное <span class="count" id="count-like">0</span>
+                            </button>
+                            <button class="filter-btn status-filter" data-status="unread">Непрочитанные</button>
+                            <button class="filter-btn status-filter" data-status="user-added">Мои книги <span class="count" id="count-user">0</span></button>
+                        </div>
+                    </div>
+
+                    <div class="catalog-header">
+                        <div class="results-count">Найдено: <strong id="results-count">0</strong> книг</div>
+                        <div class="catalog-actions">
+                            <button class="reset-filters" id="reset-filters">Сбросить фильтры</button>
+                            <button class="btn btn-primary btn-sm" id="add-book-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 0.35rem;">
+                                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                                Добавить книгу
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="books-grid" id="books-grid"></div>
+
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="benefits" class="section-padding" style="padding-top: 0;">
+            <div class="container">
+                <div class="section-panel">
+                    <h2 class="text-center">Принципы библиотеки</h2>
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <div class="benefit-icon-box"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
+                            <div><h3>С Любовью</h3><p>Каждая книга проходит бережную реставрацию перед тем, как занять свое место на полке.</p></div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon-box"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+                            <div><h3>Проверено</h3><p>Только те книги, которые действительно стоит прочитать хотя бы раз в жизни.</p></div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon-box"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+                            <div><h3>Сообщество</h3><p>Обсуждение прочитанного и обмен рекомендациями с единомышленниками.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section-padding" style="padding-top: 0;">
+            <div class="container">
+                <div class="section-panel">
+                    <h2 class="text-center">Связаться с нами</h2>
+                    <p class="text-center" style="margin-bottom: 3rem;">Есть редкое издание или хотите предложить книгу для обмена?</p>
+                    
+                    <div class="contact-layout">
+                        <form id="contact-form">
+                            <div class="form-group">
+                                <label for="name">Ваше имя</label>
+                                <input type="text" id="name" name="name" required placeholder="" autocomplete="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required placeholder="" autocomplete="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Сообщение</label>
+                                <textarea id="message" name="message" rows="5" required placeholder="Расскажите о книге или задайте вопрос..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Отправить сообщение</button>
+                        </form>
+
+                        <div id="form-success" class="form-success">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" style="margin: 0 auto 1rem; display: block;">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <h3 style="color: var(--color-accent); margin-bottom: 0.5rem;">Сообщение отправлено!</h3>
+                            <p>Спасибо за ваше обращение. Мы свяжемся с вами в ближайшее время.</p>
+                            <button class="btn btn-outline" onclick="resetForm()" style="margin-top: 1rem;">Отправить еще</button>
+                        </div>
+
+                        <div>
+                            <h3>Контактная информация</h3>
+                            <p>Мы всегда рады новым знакомствам и интересным предложениям по пополнению фонда.</p>
+                            <ul style="margin-top: 1.5rem; color: var(--color-text-muted);">
+                                <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                    library@homelib.ru
+                                </li>
+                                <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                    +7 (999) 123-45-67
+                                </li>
+                                <li style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    ул. Книжная, д. 42, Москва
+                                </li>
+                            </ul>
+                            <div class="social-links">
+                                <a href="#" class="social-link" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.28 7.27-6.36c.3-.28-.1-.45-.5-.18L8.15 13.5l-4.1-1.3c-.9-.28-.92-.88.2-1.32l15.6-6c.72-.28 1.35.16 1.12 1.3l-2.66 12.1c-.2.9-.74 1.12-1.5.7l-4.15-3.06z"/></svg></a>
+                                <a href="#" class="social-link" aria-label="VKontakte"><svg viewBox="0 0 24 24"><path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.13C2 20.67 3.33 22 8.93 22h6.13c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zM17.6 16.2c-.5.76-1.1 1.05-1.8.98-.85-.08-1.4-.6-2.1-1.3-.7-.7-1.1-1.1-1.4-1.1-.2 0-.4.2-.4.9v1.1c0 .6-.2.9-1.2.9-2.4 0-4.6-1.6-6.2-5.3-.1-.3-.1-.5.2-.5h1.7c.4 0 .6.2.8.6.6 1.6 1.5 2.4 1.9 2.4.2 0 .3-.2.3-.8V11c-.1-1-.6-1.1-1-1.1h-.3c-.4 0-.5-.2-.2-.4.3-.2.8-.4 1.4-.4h.5c.7 0 .9.3.9 1v2.2c0 .3.1.5.3.5.2 0 .5-.2 1.1-.8 1-1.1 1.7-2.5 1.7-2.5.1-.2.3-.4.7-.4h1.7c.5 0 .6.2.5.6-.3.8-1.6 2.6-1.6 2.6-.2.3-.2.5 0 .7.8.9 1.7 1.7 2.1 2.4.3.4.2.7-.2.7z"/></svg></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="logo" style="color: #fff;">HomeLib</div>
+            <div class="footer-links">
+                <a href="#hero">Главная</a>
+                <a href="#about">О нас</a>
+                <a href="#categories">Категории</a>
+                <a href="#featured">Каталог</a>
+                <a href="#contact">Контакты</a>
+            </div>
+            <p class="copyright">&copy; <span id="year"></span> Домашняя Библиотека. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="add-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title" id="modal-title">Добавить книгу</h3>
+                    <p class="modal-subtitle">Пополните вашу библиотеку новой книгой</p>
+                </div>
+                <button class="modal-close" id="modal-close" aria-label="Закрыть">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+
+            <form id="add-book-form" novalidate>
+                <div class="form-group">
+                    <label for="book-title-input">Название *</label>
+                    <input type="text" id="book-title-input" name="title" required placeholder="" maxlength="120" autocomplete="off">
+                    <div class="error-message" id="err-title">Пожалуйста, введите название</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="book-author-input">Автор *</label>
+                    <input type="text" id="book-author-input" name="author" required placeholder="" maxlength="100" autocomplete="off">
+                    <div class="error-message" id="err-author">Пожалуйста, введите автора</div>
+                </div>
+
+                <div class="modal-row">
+                    <div class="form-group">
+                        <label for="book-year-input">Год издания</label>
+                        <input type="number" id="book-year-input" name="year" placeholder="" min="-2000" max="2100">
+                        <div class="form-hint">Можно оставить пустым</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-genre-input">Жанр *</label>
+                        <select id="book-genre-input" name="genre" required>
+                        </select>
+                        <div class="error-message" id="err-genre">Пожалуйста, выберите жанр</div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" id="modal-cancel">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить в каталог</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const BASE_BOOKS = [
+            { id: 1, title: "Война и мир", author: "Лев Толстой", year: 1869, genre: "Классика" },
+            { id: 2, title: "Анна Каренина", author: "Лев Толстой", year: 1877, genre: "Классика" },
+            { id: 3, title: "Преступление и наказание", author: "Фёдор Достоевский", year: 1866, genre: "Классика" },
+            { id: 4, title: "Братья Карамазовы", author: "Фёдор Достоевский", year: 1880, genre: "Классика" },
+            { id: 5, title: "Идиот", author: "Фёдор Достоевский", year: 1869, genre: "Классика" },
+            { id: 6, title: "Мастер и Маргарита", author: "Михаил Булгаков", year: 1967, genre: "Классика" },
+            { id: 7, title: "Мёртвые души", author: "Николай Гоголь", year: 1842, genre: "Классика" },
+            { id: 8, title: "Ревизор", author: "Николай Гоголь", year: 1836, genre: "Классика" },
+            { id: 9, title: "Отцы и дети", author: "Иван Тургенев", year: 1862, genre: "Классика" },
+            { id: 10, title: "Обломов", author: "Иван Гончаров", year: 1859, genre: "Классика" },
+            { id: 11, title: "Герой нашего времени", author: "Михаил Лермонтов", year: 1840, genre: "Классика" },
+            { id: 12, title: "Тихий Дон", author: "Михаил Шолохов", year: 1940, genre: "Классика" },
+            { id: 13, title: "Доктор Живаго", author: "Борис Пастернак", year: 1957, genre: "Классика" },
+            { id: 14, title: "Собачье сердце", author: "Михаил Булгаков", year: 1925, genre: "Классика" },
+            { id: 15, title: "Белая гвардия", author: "Михаил Булгаков", year: 1925, genre: "Классика" },
+            { id: 16, title: "Гроза", author: "Александр Островский", year: 1859, genre: "Классика" },
+            { id: 17, title: "Вишнёвый сад", author: "Антон Чехов", year: 1903, genre: "Классика" },
+            { id: 18, title: "Чайка", author: "Антон Чехов", year: 1896, genre: "Классика" },
+            { id: 19, title: "Дама с собачкой", author: "Антон Чехов", year: 1899, genre: "Классика" },
+            { id: 20, title: "Палата № 6", author: "Антон Чехов", year: 1892, genre: "Классика" },
+            { id: 21, title: "Воскресение", author: "Лев Толстой", year: 1899, genre: "Классика" },
+            { id: 22, title: "Униженные и оскорблённые", author: "Фёдор Достоевский", year: 1861, genre: "Классика" },
+            { id: 23, title: "Бесы", author: "Фёдор Достоевский", year: 1872, genre: "Классика" },
+            { id: 24, title: "Записки из подполья", author: "Фёдор Достоевский", year: 1864, genre: "Классика" },
+            { id: 25, title: "Рудин", author: "Иван Тургенев", year: 1856, genre: "Классика" },
+            { id: 26, title: "Дворянское гнездо", author: "Иван Тургенев", year: 1859, genre: "Классика" },
+            { id: 27, title: "Тарас Бульба", author: "Николай Гоголь", year: 1835, genre: "Классика" },
+            { id: 28, title: "Шинель", author: "Николай Гоголь", year: 1842, genre: "Классика" },
+            { id: 29, title: "Что делать?", author: "Николай Чернышевский", year: 1863, genre: "Классика" },
+            { id: 30, title: "Кому на Руси жить хорошо", author: "Николай Некрасов", year: 1877, genre: "Поэзия" },
+            { id: 31, title: "Евгений Онегин", author: "Александр Пушкин", year: 1833, genre: "Поэзия" },
+            { id: 32, title: "Медный всадник", author: "Александр Пушкин", year: 1833, genre: "Поэзия" },
+            { id: 33, title: "Борис Годунов", author: "Александр Пушкин", year: 1825, genre: "Поэзия" },
+            { id: 34, title: "Демон", author: "Михаил Лермонтов", year: 1841, genre: "Поэзия" },
+            { id: 35, title: "Мцыри", author: "Михаил Лермонтов", year: 1840, genre: "Поэзия" },
+            { id: 36, title: "Реквием", author: "Анна Ахматова", year: 1963, genre: "Поэзия" },
+            { id: 37, title: "Стихи о Прекрасной Даме", author: "Александр Блок", year: 1904, genre: "Поэзия" },
+            { id: 38, title: "Облако в штанах", author: "Владимир Маяковский", year: 1915, genre: "Поэзия" },
+            { id: 39, title: "Москва кабацкая", author: "Сергей Есенин", year: 1924, genre: "Поэзия" },
+            { id: 40, title: "Двенадцать", author: "Александр Блок", year: 1918, genre: "Поэзия" },
+            { id: 41, title: "Пикник на обочине", author: "Аркадий и Борис Стругацкие", year: 1972, genre: "Фантастика" },
+            { id: 42, title: "Трудно быть богом", author: "Аркадий и Борис Стругацкие", year: 1964, genre: "Фантастика" },
+            { id: 43, title: "Град обреченный", author: "Аркадий и Борис Стругацкие", year: 1972, genre: "Фантастика" },
+            { id: 44, title: "Солярис", author: "Станислав Лем", year: 1961, genre: "Фантастика" },
+            { id: 45, title: "Мы", author: "Евгений Замятин", year: 1924, genre: "Фантастика" },
+            { id: 46, title: "Аэлита", author: "Алексей Толстой", year: 1923, genre: "Фантастика" },
+            { id: 47, title: "Гиперболоид инженера Гарина", author: "Алексей Толстой", year: 1927, genre: "Фантастика" },
+            { id: 48, title: "Человек-амфибия", author: "Александр Беляев", year: 1928, genre: "Фантастика" },
+            { id: 49, title: "Голова профессора Доуэля", author: "Александр Беляев", year: 1925, genre: "Фантастика" },
+            { id: 50, title: "Дюна", author: "Фрэнк Герберт", year: 1965, genre: "Фантастика" },
+            { id: 51, title: "1984", author: "Джордж Оруэлл", year: 1949, genre: "Фантастика" },
+            { id: 52, title: "451° по Фаренгейту", author: "Рэй Брэдбери", year: 1953, genre: "Фантастика" },
+            { id: 53, title: "О дивный новый мир", author: "Олдос Хаксли", year: 1932, genre: "Фантастика" },
+            { id: 54, title: "Марсианин", author: "Энди Вейер", year: 2011, genre: "Фантастика" },
+            { id: 55, title: "Автостопом по галактике", author: "Дуглас Адамс", year: 1979, genre: "Фантастика" },
+            { id: 56, title: "Нейромант", author: "Уильям Гибсон", year: 1984, genre: "Фантастика" },
+            { id: 57, title: "Гарри Поттер и философский камень", author: "Дж. К. Роулинг", year: 1997, genre: "Фантастика" },
+            { id: 58, title: "Властелин колец", author: "Дж. Р. Р. Толкин", year: 1954, genre: "Фантастика" },
+            { id: 59, title: "Хоббит, или Туда и обратно", author: "Дж. Р. Р. Толкин", year: 1937, genre: "Фантастика" },
+            { id: 60, title: "Цветы для Элджернона", author: "Дэниел Киз", year: 1966, genre: "Фантастика" },
+            { id: 61, title: "Преступление и наказание (детектив)", author: "Фёдор Достоевский", year: 1866, genre: "Детектив" },
+            { id: 62, title: "Убийство в «Восточном экспрессе»", author: "Агата Кристи", year: 1934, genre: "Детектив" },
+            { id: 63, title: "Десять негритят", author: "Агата Кристи", year: 1939, genre: "Детектив" },
+            { id: 64, title: "Шерлок Холмс: Полное собрание", author: "Артур Конан Дойл", year: 1887, genre: "Детектив" },
+            { id: 65, title: "Девушка с татуировкой дракона", author: "Стиг Ларссон", year: 2005, genre: "Детектив" },
+            { id: 66, title: "Имя розы", author: "Умберто Эко", year: 1980, genre: "Детектив" },
+            { id: 67, title: "Молчание ягнят", author: "Томас Харрис", year: 1988, genre: "Детектив" },
+            { id: 68, title: "Sapiens: Краткая история человечества", author: "Юваль Ной Харари", year: 2011, genre: "Научпоп" },
+            { id: 69, title: "Краткая история времени", author: "Стивен Хокинг", year: 1988, genre: "Научпоп" },
+            { id: 70, title: "Космос", author: "Карл Саган", year: 1980, genre: "Научпоп" },
+            { id: 71, title: "Думай медленно, решай быстро", author: "Даниэль Канеман", year: 2011, genre: "Научпоп" },
+            { id: 72, title: "Элегантная Вселенная", author: "Брайан Грин", year: 1999, genre: "Научпоп" },
+            { id: 73, title: "Физика невозможного", author: "Митио Каку", year: 2008, genre: "Научпоп" },
+            { id: 74, title: "Гёдель, Эшер, Бах", author: "Дуглас Хофштадтер", year: 1979, genre: "Научпоп" },
+            { id: 75, title: "История государства Российского", author: "Николай Карамзин", year: 1818, genre: "История" },
+            { id: 76, title: "Ружья, микробы и сталь", author: "Джаред Даймонд", year: 1997, genre: "История" },
+            { id: 77, title: "История России с древнейших времён", author: "Сергей Соловьёв", year: 1851, genre: "История" },
+            { id: 78, title: "Так говорил Заратустра", author: "Фридрих Ницше", year: 1883, genre: "Философия" },
+            { id: 79, title: "Посторонний", author: "Альбер Камю", year: 1942, genre: "Философия" },
+            { id: 80, title: "Миф о Сизифе", author: "Альбер Камю", year: 1942, genre: "Философия" },
+            { id: 81, title: "Государство", author: "Платон", year: -380, genre: "Философия" },
+            { id: 82, title: "Стив Джобс", author: "Уолтер Айзексон", year: 2011, genre: "Биография" },
+            { id: 83, title: "Леонардо да Винчи", author: "Уолтер Айзексон", year: 2017, genre: "Биография" }
+        ];
+
+        // ═══ ЭМОДЗИ И ЦВЕТА ОБЛОЖЕК ═══
+        const BOOK_EMOJIS = ['📕', '📗', '📘', '📙'];
+        const COVER_TONES_COUNT = 16;
+
+        // Эмодзи: round-robin по id с шагом 1 (без смещения),
+        // чтобы 4 подряд идущие книги имели 4 разных эмодзи.
+        // Для id >= 1000 (пользовательские) — тоже самое, без коллизий
+        function getBookEmoji(id) {
+            // Используем модуль от id — гарантирует цикл 0,1,2,3,0,1,2,3...
+            // Для отрицательных id (на всякий случай) — abs
+            return BOOK_EMOJIS[Math.abs(id) % BOOK_EMOJIS.length];
+        }
+
+        // Улучшенный хэш для цветов (murmur3-подобный финализатор),
+        // даёт равномерное распределение даже для последовательных id
+        function getCoverTone(id) {
+            let x = id | 0;
+            x = Math.imul(x ^ (x >>> 16), 0x85ebca6b);
+            x = Math.imul(x ^ (x >>> 13), 0xc2b2ae35);
+            x = (x ^ (x >>> 16)) >>> 0;
+            return x % COVER_TONES_COUNT;
+        }
+
+        const DEFAULT_READ_IDS = [
+            1, 2, 3, 4, 5, 6, 7, 9, 11, 12, 13, 14, 17, 18, 19, 20,
+            21, 22, 23, 24, 30, 31, 32, 33, 34, 36, 37, 38, 39, 40,
+            41, 42, 44, 45, 46, 50, 51, 52, 53, 55, 57, 58, 59, 60,
+            62, 64, 66, 68
+        ];
+        const DEFAULT_LIKE_IDS = [2, 6, 14, 31, 41, 51, 58, 64];
+
+        let userBooks = JSON.parse(localStorage.getItem('homelib_user_books') || '[]');
+        let booksData = [...BASE_BOOKS, ...userBooks];
+
+        function getNextBookId() {
+            const maxId = booksData.reduce((m, b) => Math.max(m, b.id), 0);
+            return Math.max(1000, maxId + 1);
+        }
+
+        const BOOKS_PER_PAGE = 12;
+        let currentPage = 1;
+        let currentGenre = 'all';
+        let currentStatus = 'all';
+        
+        let userStatus = JSON.parse(localStorage.getItem('homelib_status_v2') || 'null');
+        if (!userStatus) {
+            userStatus = {};
+            booksData.forEach(book => {
+                userStatus[book.id] = {
+                    read: DEFAULT_READ_IDS.includes(book.id),
+                    liked: DEFAULT_LIKE_IDS.includes(book.id)
+                };
+            });
+            localStorage.setItem('homelib_status_v2', JSON.stringify(userStatus));
+        }
+
+        function saveStatus() { localStorage.setItem('homelib_status_v2', JSON.stringify(userStatus)); }
+        function saveUserBooks() { localStorage.setItem('homelib_user_books', JSON.stringify(userBooks)); }
+        function getBookStatus(id) { return userStatus[id] || { read: false, liked: false }; }
+
+        function toggleRead(id) {
+            if (!userStatus[id]) userStatus[id] = { read: false, liked: false };
+            userStatus[id].read = !userStatus[id].read;
+            saveStatus(); updateCounters(); applyFilters();
+        }
+        function toggleLike(id) {
+            if (!userStatus[id]) userStatus[id] = { read: false, liked: false };
+            userStatus[id].liked = !userStatus[id].liked;
+            saveStatus(); updateCounters(); applyFilters();
+        }
+
+        function deleteUserBook(id) {
+            if (!confirm('Удалить эту книгу из вашей библиотеки?')) return;
+            userBooks = userBooks.filter(b => b.id !== id);
+            saveUserBooks();
+            booksData = booksData.filter(b => b.id !== id);
+            delete userStatus[id];
+            saveStatus();
+            renderGenreFilters();
+            renderCategoryCards();
+            updateStats();
+            applyFilters();
+        }
+
+        function getGenres() {
+            return [...new Set(booksData.map(b => b.genre))].sort();
+        }
+
+        function renderGenreFilters() {
+            const container = document.querySelector('.filter-group');
+            const allBtn = container.querySelector('[data-genre="all"]');
+            container.innerHTML = '';
+            container.appendChild(allBtn);
+
+            getGenres().forEach(genre => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn genre-filter';
+                btn.dataset.genre = genre;
+                btn.textContent = genre;
+                btn.addEventListener('click', () => {
+                    currentGenre = genre; currentPage = 1;
+                    syncFilterUI(); applyFilters();
+                });
+                container.appendChild(btn);
+            });
+        }
+
+        const catIcons = {
+            "Фантастика": '<path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/>',
+            "Классика": '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>',
+            "Научпоп": '<path d="M19.8 18.4L14 10.67V6.5l1.35-1.69c.26-.33.03-.81-.39-.81H9.04c-.42 0-.65.48-.39.81L10 6.5v4.17L4.2 18.4c-.49.66-.02 1.6.8 1.6h14c.82 0 1.29-.94.8-1.6z"/>',
+            "Поэзия": '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>',
+            "История": '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>',
+            "Детектив": '<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>',
+            "Философия": '<path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>',
+            "Биография": '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>'
+        };
+
+        function renderCategoryCards() {
+            const grid = document.getElementById('categories-grid');
+            grid.innerHTML = '';
+            getGenres().forEach(genre => {
+                const card = document.createElement('article');
+                card.className = 'category-card';
+                card.innerHTML = `
+                    <svg class="cat-icon" viewBox="0 0 24 24">${catIcons[genre] || catIcons["Классика"]}</svg>
+                    <h3>${genre}</h3>
+                `;
+                card.addEventListener('click', () => {
+                    currentGenre = genre; currentStatus = 'all'; currentPage = 1;
+                    syncFilterUI();
+                    document.getElementById('featured').scrollIntoView({ behavior: 'smooth' });
+                    applyFilters();
+                });
+                grid.appendChild(card);
+            });
+        }
+
+        function getFilteredBooks() {
+            return booksData.filter(book => {
+                if (currentGenre !== 'all' && book.genre !== currentGenre) return false;
+                const status = getBookStatus(book.id);
+                if (currentStatus === 'read' && !status.read) return false;
+                if (currentStatus === 'like' && !status.liked) return false;
+                if (currentStatus === 'unread' && status.read) return false;
+                if (currentStatus === 'user-added' && book.id < 1000) return false;
+                return true;
+            });
+        }
+
+        function renderBooks() {
+            const grid = document.getElementById('books-grid');
+            const filtered = getFilteredBooks();
+            const totalPages = Math.ceil(filtered.length / BOOKS_PER_PAGE) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * BOOKS_PER_PAGE;
+            const pageBooks = filtered.slice(start, start + BOOKS_PER_PAGE);
+            grid.innerHTML = '';
+
+            if (pageBooks.length === 0) {
+                grid.innerHTML = '<p class="text-center" style="grid-column: 1/-1; padding: 3rem 1rem; color: var(--color-text-muted);">По вашему запросу ничего не найдено. Попробуйте изменить фильтры или добавьте новую книгу.</p>';
+            } else {
+                pageBooks.forEach((book, i) => {
+                    const status = getBookStatus(book.id);
+                    const emoji = getBookEmoji(book.id);
+                    const tone = getCoverTone(book.id);
+                    const isUser = book.id >= 1000;
+                    const card = document.createElement('article');
+                    card.className = `book-card cover-tone-${tone}` 
+                        + (status.read ? ' is-read' : '') 
+                        + (isUser ? ' is-user-added' : '');
+                    card.dataset.genre = book.genre;
+                    card.style.animationDelay = `${i * 0.04}s`;
+                    
+                    let badgesHtml = '';
+                    if (status.read) badgesHtml += '<span class="badge badge-read">✓ Прочитано</span>';
+                    if (status.liked) badgesHtml += '<span class="badge badge-like">♥ Избранное</span>';
+
+                    const yearDisplay = book.year < 0 
+                        ? Math.abs(book.year) + ' до н.э.' 
+                        : (book.year ? book.year + ' г.' : '—');
+
+                    card.innerHTML = `
+                        <div class="book-cover-wrapper">
+                            <span class="book-cover-emoji" role="img" aria-label="Обложка книги ${book.title}">${emoji}</span>
+                            <div class="book-badges">${badgesHtml}</div>
+                            <div class="book-actions">
+                                <button class="action-btn like-btn ${status.liked ? 'active' : ''}" data-id="${book.id}" data-action="like" aria-label="Избранное" title="${status.liked ? 'Убрать из избранного' : 'В избранное'}">
+                                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                </button>
+                                <button class="action-btn read-btn ${status.read ? 'active' : ''}" data-id="${book.id}" data-action="read" aria-label="Прочитано" title="${status.read ? 'Непрочитано' : 'Прочитано'}">
+                                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                                </button>
+                                ${isUser ? `
+                                <button class="action-btn delete-btn" data-id="${book.id}" data-action="delete" aria-label="Удалить" title="Удалить из библиотеки">
+                                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                </button>` : ''}
+                            </div>
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title" title="${book.title}">${book.title}</h3>
+                            <p class="book-author">${book.author}</p>
+                            <div class="book-meta">
+                                <span class="book-year">${yearDisplay}</span>
+                                <span class="book-genre">${book.genre}</span>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            document.getElementById('results-count').textContent = filtered.length;
+            renderPagination(totalPages);
+        }
+
+        document.getElementById('books-grid').addEventListener('click', (e) => {
+            const btn = e.target.closest('.action-btn');
+            if (!btn) return;
+            e.stopPropagation();
+            const id = parseInt(btn.dataset.id);
+            const action = btn.dataset.action;
+            if (action === 'like') toggleLike(id);
+            if (action === 'read') toggleRead(id);
+            if (action === 'delete') deleteUserBook(id);
+        });
+
+        function renderPagination(totalPages) {
+            const pag = document.getElementById('pagination');
+            pag.innerHTML = '';
+            if (totalPages <= 1) return;
+
+            const createBtn = (text, page, isNav = false, disabled = false) => {
+                const btn = document.createElement('button');
+                btn.className = 'page-btn' + (isNav ? ' nav-btn' : '') + (page === currentPage && !isNav ? ' active' : '');
+                btn.innerHTML = text;
+                btn.disabled = disabled;
+                if (!disabled) {
+                    btn.addEventListener('click', () => {
+                        currentPage = page;
+                        renderBooks();
+                        document.getElementById('featured').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                }
+                return btn;
+            };
+
+            pag.appendChild(createBtn('<svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>', currentPage - 1, true, currentPage === 1));
+
+            const pages = [];
+            if (totalPages <= 7) {
+                for (let i = 1; i <= totalPages; i++) pages.push(i);
+            } else {
+                pages.push(1);
+                if (currentPage > 3) pages.push('...');
+                for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) pages.push(i);
+                if (currentPage < totalPages - 2) pages.push('...');
+                pages.push(totalPages);
+            }
+
+            pages.forEach(p => {
+                if (p === '...') {
+                    const dots = document.createElement('span');
+                    dots.className = 'page-dots';
+                    dots.textContent = '…';
+                    pag.appendChild(dots);
+                } else {
+                    pag.appendChild(createBtn(p, p));
+                }
+            });
+
+            pag.appendChild(createBtn('<svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>', currentPage + 1, true, currentPage === totalPages));
+        }
+
+        document.querySelectorAll('.genre-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentGenre = btn.dataset.genre;
+                currentPage = 1;
+                syncFilterUI();
+                applyFilters();
+            });
+        });
+        document.querySelectorAll('.status-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentStatus = btn.dataset.status;
+                currentPage = 1;
+                syncFilterUI();
+                applyFilters();
+            });
+        });
+
+        function syncFilterUI() {
+            document.querySelectorAll('.genre-filter').forEach(b => b.classList.toggle('active', b.dataset.genre === currentGenre));
+            document.querySelectorAll('.status-filter').forEach(b => b.classList.toggle('active', b.dataset.status === currentStatus));
+        }
+
+        document.getElementById('reset-filters').addEventListener('click', () => {
+            currentGenre = 'all'; currentStatus = 'all'; currentPage = 1;
+            syncFilterUI(); applyFilters();
+        });
+
+        function applyFilters() { renderBooks(); updateCounters(); }
+
+        function updateCounters() {
+            const readCount = booksData.filter(b => getBookStatus(b.id).read).length;
+            const likeCount = booksData.filter(b => getBookStatus(b.id).liked).length;
+            const userCount = booksData.filter(b => b.id >= 1000).length;
+            document.getElementById('count-read').textContent = readCount;
+            document.getElementById('count-like').textContent = likeCount;
+            document.getElementById('count-user').textContent = userCount;
+        }
+
+        function updateStats() {
+            document.getElementById('stat-books').textContent = booksData.length;
+            document.getElementById('stat-authors').textContent = [...new Set(booksData.map(b => b.author))].length;
+            document.getElementById('stat-genres').textContent = getGenres().length;
+        }
+
+        const modal = document.getElementById('add-modal');
+        const addForm = document.getElementById('add-book-form');
+        const genreSelect = document.getElementById('book-genre-input');
+
+        function openModal() {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('book-title-input').focus(), 200);
+        }
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            addForm.reset();
+            clearErrors();
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('visible'));
+        }
+
+        function fillGenreSelect() {
+            genreSelect.innerHTML = '';
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = '— Выберите жанр —';
+            placeholder.disabled = true;
+            placeholder.selected = true;
+            genreSelect.appendChild(placeholder);
+            getGenres().forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.textContent = g;
+                genreSelect.appendChild(opt);
+            });
+        }
+
+        document.getElementById('add-book-btn').addEventListener('click', () => {
+            fillGenreSelect();
+            openModal();
+        });
+        document.getElementById('modal-close').addEventListener('click', closeModal);
+        document.getElementById('modal-cancel').addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
+
+        addForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearErrors();
+
+            const title = document.getElementById('book-title-input').value.trim();
+            const author = document.getElementById('book-author-input').value.trim();
+            const yearRaw = document.getElementById('book-year-input').value.trim();
+            const genre = genreSelect.value;
+
+            let valid = true;
+
+            if (!title) {
+                document.getElementById('book-title-input').classList.add('field-error');
+                document.getElementById('err-title').classList.add('visible');
+                valid = false;
+            }
+            if (!author) {
+                document.getElementById('book-author-input').classList.add('field-error');
+                document.getElementById('err-author').classList.add('visible');
+                valid = false;
+            }
+            if (!genre) {
+                genreSelect.classList.add('field-error');
+                document.getElementById('err-genre').classList.add('visible');
+                valid = false;
+            }
+            if (!valid) return;
+
+            const newBook = {
+                id: getNextBookId(),
+                title,
+                author,
+                year: yearRaw === '' ? null : parseInt(yearRaw, 10),
+                genre
+            };
+
+            userBooks.push(newBook);
+            saveUserBooks();
+            booksData.push(newBook);
+
+            userStatus[newBook.id] = { read: false, liked: false };
+            saveStatus();
+
+            renderGenreFilters();
+            renderCategoryCards();
+            updateStats();
+            updateCounters();
+
+            currentGenre = 'all';
+            currentStatus = 'all';
+            syncFilterUI();
+
+            const filtered = getFilteredBooks();
+            const newIndex = filtered.findIndex(b => b.id === newBook.id);
+            currentPage = Math.floor(newIndex / BOOKS_PER_PAGE) + 1;
+
+            renderBooks();
+            closeModal();
+
+            setTimeout(() => {
+                document.getElementById('featured').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const newCard = document.querySelector(`.book-card [data-id="${newBook.id}"]`)?.closest('.book-card');
+                if (newCard) {
+                    newCard.style.transition = 'box-shadow 0.3s, transform 0.3s';
+                    newCard.style.boxShadow = '0 0 0 3px var(--color-primary), var(--shadow-xl)';
+                    setTimeout(() => { newCard.style.boxShadow = ''; }, 2500);
+                }
+            }, 300);
+        });
+
+        const contactForm = document.getElementById('contact-form');
+        const formSuccess = document.getElementById('form-success');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = contactForm.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.textContent = 'Отправка...'; btn.disabled = true;
+            setTimeout(() => {
+                contactForm.style.display = 'none';
+                formSuccess.style.display = 'block';
+                btn.textContent = originalText; btn.disabled = false;
+                contactForm.reset();
+            }, 1200);
+        });
+        function resetForm() {
+            formSuccess.style.display = 'none';
+            contactForm.style.display = 'block';
+        }
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+        updateStats();
+
+        const burger = document.querySelector('.burger');
+        const nav = document.querySelector('.nav-links');
+        const overlay = document.querySelector('.nav-overlay');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        let isMenuOpen = false;
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            nav.classList.toggle('active', isMenuOpen);
+            overlay.classList.toggle('active', isMenuOpen);
+            burger.setAttribute('aria-expanded', isMenuOpen);
+            document.body.style.overflow = isMenuOpen ? 'hidden' : 'auto';
+        }
+        burger.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+        navLinks.forEach(link => link.addEventListener('click', () => isMenuOpen && toggleMenu()));
+        window.addEventListener('resize', () => { if (window.innerWidth > 768 && isMenuOpen) toggleMenu(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isMenuOpen) toggleMenu(); });
+
+        const sections = document.querySelectorAll('section');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (pageYOffset >= sectionTop) current = section.getAttribute('id');
+            });
+            navLinks.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href').includes(current)) a.classList.add('active');
+            });
+        });
+
+        renderGenreFilters();
+        renderCategoryCards();
+        syncFilterUI();
+        applyFilters();
+    </script>
+</body>
+</html>

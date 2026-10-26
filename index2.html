@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOOK//SHELF — цифровой книжный полка</title>
+<meta name="description" content="Минималистичный трекер прочитанных книг. Тёмная тема, неон, список.">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>◼</text></svg>">
+
+<style>
+/* ═══════════════════════════════════════════
+   BOOK//SHELF — терминально-неоновый стиль
+   ═══════════════════════════════════════════ */
+
+:root{
+  --bg: #0A0A0B;
+  --bg-soft: #111114;
+  --panel: #16161A;
+  --panel-2: #1C1C22;
+  --line: #26262E;
+  --line-bright: #3A3A46;
+  --text: #E8E6E3;
+  --text-dim: #6E6E7A;
+  --text-mid: #9A9AA8;
+  --neon: #C6FF3D;
+  --neon-dim: #8FB82B;
+  --cyan: #3DE8FF;
+  --pink: #FF3D9A;
+  --orange: #FF8A3D;
+  --font-mono: "JetBrains Mono", "SF Mono", "Consolas", monospace;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family: var(--font-mono);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+/* Сетка-фон */
+body::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(198,255,61,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198,255,61,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Шум */
+body::after{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:1px solid var(--neon);outline-offset:2px}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  html{scroll-behavior:auto}
+}
+
+.wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 1.25rem;position:relative;z-index:2}
+@media(min-width:768px){.wrap{padding:0 2rem}}
+
+/* ── HEADER ── */
+.top{
+  position:sticky;top:0;z-index:800;
+  background: rgba(10,10,11,.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--line);
+}
+.top-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  height: 56px; gap:1rem;
+}
+.logo{
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  display: flex; align-items: center; gap: .6rem;
+}
+.logo .dot{
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--neon);
+  box-shadow: 0 0 12px var(--neon), 0 0 4px var(--neon);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.5;transform:scale(.85)}
+}
+.logo .slash{color: var(--neon); font-weight: 300; opacity:.5}
+
+.nav{display:flex;gap:1.75rem;font-size:.82rem;letter-spacing:.02em}
+.nav a{
+  color: var(--text-dim);
+  position:relative;
+  padding: .3rem 0;
+  text-transform: uppercase;
+  font-size: .72rem;
+  letter-spacing: .1em;
+  transition: color .2s;
+}
+.nav a::before{
+  content:"[";
+  position:absolute;left:-10px;
+  color: var(--neon);
+  opacity:0;
+  transition: opacity .2s;
+}
+.nav a::after{
+  content:"]";
+  position:absolute;right:-10px;
+  color: var(--neon);
+  opacity:0;
+  transition: opacity .2s;
+}
+.nav a:hover,.nav a.on{color: var(--text)}
+.nav a:hover::before,.nav a:hover::after,
+.nav a.on::before,.nav a.on::after{opacity:1}
+
+.burger{display:none;width:40px;height:40px;align-items:center;justify-content:center}
+.burger svg{width:22px;height:22px;stroke:var(--text);fill:none;stroke-width:1.5}
+
+@media(max-width:768px){
+  .burger{display:flex}
+  .nav{
+    position:fixed;top:56px;left:0;right:0;bottom:0;
+    background: var(--bg);
+    flex-direction:column;gap:0;
+    padding: 2rem 1.5rem;
+    transform: translateX(100%);
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+    z-index: 799;
+  }
+  .nav.open{transform: translateX(0)}
+  .nav a{
+    font-size:1.1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+    width:100%;
+  }
+  .nav a::before,.nav a::after{display:none}
+}
+
+/* ── HERO ── */
+.hero{
+  padding: clamp(3rem, 8vw, 6rem) 0 clamp(2rem, 5vw, 4rem);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  top: 50%; right: -100px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(198,255,61,.08), transparent 70%);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.hero-tag{
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .2em;
+  color: var(--neon);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.hero-tag::before{
+  content:"";
+  width: 32px; height: 1px;
+  background: var(--neon);
+}
+.hero h1{
+  font-family: var(--font-mono);
+  font-size: clamp(2rem, 6.5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin-bottom: 1.5rem;
+  max-width: 900px;
+}
+.hero h1 .hl{
+  color: var(--neon);
+  position: relative;
+}
+.hero h1 .hl::after{
+  content:"";
+  position:absolute;left:0;right:0;bottom:.08em;
+  height:.12em;
+  background: var(--neon);
+  opacity:.25;
+}
+.hero h1 .sub{
+  display: block;
+  color: var(--text-dim);
+  font-size: .35em;
+  letter-spacing: .02em;
+  margin-top: 1rem;
+  font-weight: 400;
+}
+.hero-sub{
+  font-family: var(--font-sans);
+  color: var(--text-mid);
+  font-size: 1rem;
+  max-width: 520px;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.cta-row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding: .75rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  font-weight: 500;
+  letter-spacing: .02em;
+  border-radius: 0;
+  transition: all .2s;
+  border: 1px solid var(--line-bright);
+  background: var(--panel);
+  color: var(--text);
+  text-transform: uppercase;
+}
+.btn:hover{
+  border-color: var(--neon);
+  color: var(--neon);
+  background: var(--panel-2);
+}
+.btn-neon{
+  background: var(--neon);
+  color: #0A0A0B;
+  border-color: var(--neon);
+  font-weight: 700;
+}
+.btn-neon:hover{
+  background: var(--text);
+  border-color: var(--text);
+  color: #0A0A0B;
+  box-shadow: 0 0 24px rgba(198,255,61,.3);
+}
+.btn-sm{padding:.5rem .9rem;font-size:.72rem}
+.btn svg{width:14px;height:14px;fill:currentColor}
+
+/* ── СТАТИСТИКА ── */
+.stats{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+@media(min-width:640px){.stats{grid-template-columns: repeat(4, 1fr)}}
+.stat{
+  padding: 1.5rem 1.25rem;
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+.stat:last-child{border-right:none}
+@media(max-width:639px){
+  .stat:nth-child(2){border-right:none}
+  .stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--line)}
+}
+.stat-num{
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: var(--neon);
+  line-height: 1;
+  letter-spacing: -.03em;
+  display: block;
+  margin-bottom: .35rem;
+}
+.stat-lbl{
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: var(--text-dim);
+}
+
+/* ── СЕКЦИИ ── */
+.sec{padding: clamp(2.5rem, 6vw, 4.5rem) 0}
+.sec-head{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.sec-head h2{
+  font-family: var(--font-mono);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.sec-head h2::before{
+  content:"//";
+  color: var(--neon);
+  font-weight: 400;
+  opacity: .7;
+}
+.sec-head .meta{
+  font-size: .72rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+/* ── ФИЛЬТРЫ ── */
+.filters{
+  display:flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1.5rem;
+}
+.filters .lbl{
+  font-size: .68rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  margin-right: .5rem;
+}
+.filters .sep{
+  width:1px;
+  height: 20px;
+  background: var(--line);
+  margin: 0 .5rem;
+}
+.tag-btn{
+  padding: .45rem .85rem;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .02em;
+  color: var(--text-mid);
+  background: transparent;
+  border: 1px solid var(--line);
+  transition: all .15s;
+  text-transform: lowercase;
+}
+.tag-btn:hover{
+  border-color: var(--line-bright);
+  color: var(--text);
+}
+.tag-btn.on{
+  background: var(--neon);
+  color: #0A0A0B;
+  border-color: var(--neon);
+  font-weight: 700;
+}
+.tag-btn.on.read-on{
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: #0A0A0B;
+}
+.tag-btn.on.like-on{
+  background: var(--pink);
+  border-color: var(--pink);
+  color: #0A0A0B;
+}
+.tag-btn .n{
+  opacity: .55;
+  margin-left: .3rem;
+}
+.tag-btn.on .n{opacity: .75}
+
+/* ── СПИСОК КНИГ ── */
+.booklist{
+  border-top: 1px solid var(--line);
+}
+.book{
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem .5rem;
+  border-bottom: 1px solid var(--line);
+  transition: background .15s, padding .2s;
+  position: relative;
+  animation: slideIn .4s ease backwards;
+}
+@keyframes slideIn{
+  from{opacity:0; transform: translateX(-12px)}
+  to{opacity:1; transform: translateX(0)}
+}
+.book:hover{
+  background: var(--panel);
+  padding-left: 1rem;
+}
+.book:hover::before{
+  content:"";
+  position:absolute;left:0;top:0;bottom:0;
+  width:2px;
+  background: var(--neon);
+}
+.book.read::before{
+  content:"";
+  position:absolute;left:0;top:0;bottom:0;
+  width:2px;
+  background: var(--cyan);
+  opacity:.5;
+}
+
+.book-idx{
+  font-size: .72rem;
+  color: var(--text-dim);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.book-main{min-width:0}
+.book-title{
+  font-family: var(--font-sans);
+  font-size: .98rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: .15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -.01em;
+}
+.book.read .book-title{
+  color: var(--text-mid);
+  text-decoration: line-through;
+  text-decoration-color: var(--text-dim);
+  text-decoration-thickness: 1px;
+}
+.book-author{
+  font-size: .78rem;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+.book-author .sep{opacity:.4}
+.book-author .yr{color: var(--text-mid)}
+.book-author .gn{
+  color: var(--neon);
+  opacity:.85;
+}
+
+.book-tags{
+  display: none;
+  gap: .35rem;
+  margin-top: .4rem;
+}
+@media(min-width:640px){.book-tags{display:flex}}
+.mtag{
+  font-size: .62rem;
+  padding: .1rem .45rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.mtag.ok{
+  color: var(--cyan);
+  border: 1px solid rgba(61,232,255,.3);
+}
+.mtag.rose{
+  color: var(--pink);
+  border: 1px solid rgba(255,61,154,.3);
+}
+.mtag.mine{
+  color: var(--orange);
+  border: 1px solid rgba(255,138,61,.3);
+}
+
+.book-actions{
+  display: flex;
+  gap: .3rem;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.book:hover .book-actions,
+.book:focus-within .book-actions{opacity: 1}
+@media(hover:none){.book-actions{opacity:1}}
+
+.act{
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text-dim);
+  transition: all .15s;
+}
+.act:hover{color: var(--text); border-color: var(--line-bright)}
+.act.like:hover,.act.like.on{color: var(--pink); border-color: var(--pink)}
+.act.read:hover,.act.read.on{color: var(--cyan); border-color: var(--cyan)}
+.act.del:hover{color: var(--pink); border-color: var(--pink)}
+.act svg{width:14px;height:14px;fill:currentColor}
+
+/* ── ПАГИНАЦИЯ ── */
+.pager{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .25rem;
+  padding: 2rem 0 1rem;
+  flex-wrap: wrap;
+}
+.pg{
+  min-width: 36px; height: 36px;
+  padding: 0 .6rem;
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-mid);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.pg:hover:not(:disabled){
+  border-color: var(--neon);
+  color: var(--neon);
+}
+.pg.on{
+  background: var(--neon);
+  border-color: var(--neon);
+  color: #0A0A0B;
+  font-weight: 700;
+}
+.pg:disabled{opacity:.25;cursor:not-allowed}
+.pg svg{width:12px;height:12px;fill:currentColor}
+.dots{color:var(--text-dim);padding:0 .3rem;font-size:.8rem}
+
+/* ── ПУСТО ── */
+.empty{
+  padding: 4rem 1rem;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: .85rem;
+  border-bottom: 1px solid var(--line);
+}
+.empty strong{color: var(--text);display:block;margin-bottom:.5rem;font-size:1rem}
+
+/* ── ФИЛОСОФИЯ ── */
+.philo{
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid var(--line);
+}
+@media(min-width:640px){.philo{grid-template-columns:repeat(3,1fr)}}
+.philo-item{
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+@media(min-width:640px){
+  .philo-item{border-bottom:none}
+  .philo-item:last-child{border-right:none}
+}
+.philo-num{
+  font-size: .68rem;
+  color: var(--neon);
+  letter-spacing: .2em;
+  margin-bottom: 1rem;
+}
+.philo-item h3{
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: .5rem;
+  letter-spacing: -.01em;
+}
+.philo-item p{
+  font-family: var(--font-sans);
+  font-size: .85rem;
+  color: var(--text-mid);
+  line-height: 1.55;
+}
+
+/* ── КОНТАКТ ── */
+.contact-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+@media(min-width:768px){.contact-grid{grid-template-columns: 1fr 1fr}}
+.contact-left{
+  padding: 2rem;
+  border-bottom: 1px solid var(--line);
+}
+@media(min-width:768px){
+  .contact-left{border-bottom:none;border-right:1px solid var(--line)}
+}
+.contact-right{padding: 2rem}
+
+.field{margin-bottom:1.25rem}
+.field label{
+  display: block;
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: var(--text-dim);
+  margin-bottom: .5rem;
+}
+.field input,
+.field textarea,
+.field select{
+  width: 100%;
+  padding: .75rem .9rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  transition: border-color .15s;
+  border-radius: 0;
+}
+.field textarea{resize:vertical;min-height:100px}
+.field input:focus,
+.field textarea:focus,
+.field select:focus{
+  outline:none;
+  border-color: var(--neon);
+  box-shadow: 0 0 0 1px var(--neon);
+}
+.field input::placeholder,
+.field textarea::placeholder{color: var(--text-dim);opacity:.5}
+
+.contact-info dt{
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: var(--text-dim);
+  margin-bottom: .25rem;
+  margin-top: 1.25rem;
+}
+.contact-info dd{
+  font-family: var(--font-sans);
+  font-size: .9rem;
+  color: var(--text);
+}
+.contact-info dt:first-child{margin-top:0}
+
+.ok-msg{
+  display:none;
+  padding: 2rem;
+  text-align: center;
+  border: 1px solid var(--neon);
+  background: rgba(198,255,61,.04);
+}
+.ok-msg.show{display:block}
+.ok-msg h3{
+  color: var(--neon);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  margin-bottom: .5rem;
+}
+.ok-msg p{color:var(--text-mid);font-size:.85rem;font-family:var(--font-sans)}
+
+/* ── FOOTER ── */
+.foot{
+  padding: 2rem 0;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: .72rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.foot-links{display:flex;gap:1.25rem}
+.foot-links a:hover{color:var(--neon)}
+
+/* ── MODAL ── */
+.modal-bg{
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(10,10,11,.85);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+  opacity: 0; visibility: hidden;
+  transition: opacity .2s, visibility .2s;
+}
+.modal-bg.open{opacity:1;visibility:visible}
+.modal{
+  background: var(--panel);
+  border: 1px solid var(--line-bright);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1.75rem;
+  transform: translateY(20px);
+  transition: transform .25s cubic-bezier(.4,0,.2,1);
+}
+.modal-bg.open .modal{transform: translateY(0)}
+.modal-head{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.modal-head h3{
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  letter-spacing: -.02em;
+}
+.modal-head h3::before{content:"// ";color:var(--neon);opacity:.7}
+.modal-head p{
+  font-size: .72rem;
+  color: var(--text-dim);
+  margin-top: .25rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.x{
+  width: 32px; height: 32px;
+  border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim);
+  transition: all .15s;
+}
+.x:hover{border-color: var(--pink); color: var(--pink)}
+.x svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5}
+
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:440px){.row-2{grid-template-columns:1fr}}
+
+.modal-foot{display:flex;gap:.5rem;margin-top:.5rem}
+.modal-foot .btn{flex:1;justify-content:center}
+
+.hint{font-size:.68rem;color:var(--text-dim);margin-top:.3rem;letter-spacing:.05em}
+.err{border-color: var(--pink) !important; box-shadow: 0 0 0 1px var(--pink) !important}
+.err-msg{display:none;font-size:.7rem;color:var(--pink);margin-top:.35rem}
+.err-msg.show{display:block}
+
+/* Мелкие правки */
+.mono{font-family: var(--font-mono)}
+.sans{font-family: var(--font-sans)}
+.up{text-transform: uppercase; letter-spacing: .1em}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <a href="#top" class="logo">
+      <span class="dot"></span>
+      BOOK<span class="slash">//</span>SHELF
+    </a>
+    <button class="burger" aria-label="Меню" aria-expanded="false">
+      <svg viewBox="0 0 24 24" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <nav class="nav">
+      <a href="#stats">stats</a>
+      <a href="#catalog">catalog</a>
+      <a href="#philosophy">philosophy</a>
+      <a href="#contact">contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-tag">v2.4 // цифровой архив</div>
+      <h1>
+        Твой <span class="hl">книжный</span> трекер.
+        <span class="sub">минимализм. тёмная тема. никакой лишней мишуры.</span>
+      </h1>
+      <p class="hero-sub">
+        Отмечай прочитанное, собирай избранное, веди собственный каталог.
+        Всё хранится локально — ничего лишнего.
+      </p>
+      <div class="cta-row">
+        <a href="#catalog" class="btn btn-neon">→ открыть каталог</a>
+        <a href="#stats" class="btn">о системе</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="stats">
+    <div class="wrap">
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-num" id="s-total">0</span>
+          <span class="stat-lbl">всего книг</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="s-read">0</span>
+          <span class="stat-lbl">прочитано</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="s-like">0</span>
+          <span class="stat-lbl">в избранном</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="s-mine">0</span>
+          <span class="stat-lbl">добавлено вами</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOG -->
+  <section id="catalog" class="sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>catalog</h2>
+        <div class="meta">// найдено: <span id="found">0</span></div>
+      </div>
+
+      <div class="filters">
+        <span class="lbl">жанр:</span>
+        <button class="tag-btn on" data-genre="all">все</button>
+        <!-- жанровые кнопки подставляются -->
+        <span class="sep"></span>
+        <span class="lbl">статус:</span>
+        <button class="tag-btn on" data-status="all">все</button>
+        <button class="tag-btn read-on" data-status="read">прочитано<span class="n" id="n-read">0</span></button>
+        <button class="tag-btn like-on" data-status="like">избранное<span class="n" id="n-like">0</span></button>
+        <button class="tag-btn" data-status="unread">непрочитано</button>
+        <button class="tag-btn" data-status="mine">мои книги<span class="n" id="n-mine">0</span></button>
+      </div>
+
+      <div class="sec-head" style="margin-bottom:1rem">
+        <div class="meta" style="text-transform:none;font-size:.78rem">
+          сортировка: <span style="color:var(--neon)">по индексу ↑</span>
+        </div>
+        <div style="display:flex;gap:.5rem">
+          <button class="btn btn-sm" id="reset">✕ сбросить</button>
+          <button class="btn btn-sm btn-neon" id="open-add">+ добавить</button>
+        </div>
+      </div>
+
+      <div class="booklist" id="list"></div>
+      <div class="pager" id="pager"></div>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY -->
+  <section id="philosophy" class="sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>philosophy</h2>
+      </div>
+    </div>
+    <div class="wrap" style="padding:0">
+      <div class="philo">
+        <div class="philo-item">
+          <div class="philo-num">01 / ФОКУС</div>
+          <h3>Только важное</h3>
+          <p>Никаких рекомендаций «из мира», только то, что вы сами добавили или отметили.</p>
+        </div>
+        <div class="philo-item">
+          <div class="philo-num">02 / ЛОКАЛЬНОСТЬ</div>
+          <h3>Данные — ваши</h3>
+          <p>Состояние хранится в вашем браузере. Без серверов, без аккаунтов, без трекинга.</p>
+        </div>
+        <div class="philo-item">
+          <div class="philo-num">03 / СКОРОСТЬ</div>
+          <h3>Мгновенный отклик</h3>
+          <p>Фильтры, отметки и добавление книг работают без перезагрузки страницы.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="sec" style="padding-bottom:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>contact</h2>
+      </div>
+    </div>
+    <div class="wrap" style="padding:0">
+      <div class="contact-grid">
+        <div class="contact-left">
+          <p style="font-family:var(--font-sans);color:var(--text-mid);font-size:.9rem;margin-bottom:1.5rem">
+            Есть вопрос или предложение? Напишите — отвечаем в течение дня.
+          </p>
+          <form id="cform">
+            <div class="field">
+              <label for="cn">имя</label>
+              <input id="cn" name="name" required autocomplete="name" placeholder="Как к вам обращаться?">
+            </div>
+            <div class="field">
+              <label for="ce">email</label>
+              <input id="ce" name="email" type="email" required autocomplete="email" placeholder="you@example.com">
+            </div>
+            <div class="field">
+              <label for="cm">сообщение</label>
+              <textarea id="cm" name="message" rows="4" required placeholder="Текст сообщения..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-neon" style="width:100%;justify-content:center">→ отправить</button>
+          </form>
+          <div class="ok-msg" id="okmsg">
+            <h3>// сообщение отправлено</h3>
+            <p>Спасибо, мы свяжемся с вами скоро.</p>
+            <button class="btn btn-sm" onclick="resetForm()" style="margin-top:1rem">← назад</button>
+          </div>
+        </div>
+
+        <div class="contact-right">
+          <dl class="contact-info">
+            <dt>email</dt>
+            <dd>hello@bookshelf.io</dd>
+
+            <dt>telegram</dt>
+            <dd>@bookshelf_bot</dd>
+
+            <dt>адрес</dt>
+            <dd>Москва, ул. Полка, 12</dd>
+
+            <dt>часы работы</dt>
+            <dd>Пн–Пт, 10:00 — 19:00</dd>
+          </dl>
+
+          <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--line)">
+            <div class="up" style="font-size:.68rem;color:var(--text-dim);letter-spacing:.15em;margin-bottom:.75rem">
+              // соцсети
+            </div>
+            <div style="display:flex;gap:.5rem">
+              <a href="#" class="act" aria-label="GitHub">
+                <svg viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18.91-.25 1.89-.38 2.86-.38.97 0 1.95.13 2.86.38 2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.42-2.69 5.39-5.25 5.67.41.35.78 1.05.78 2.11v3.13c0 .31.21.68.8.56C20.21 21.38 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+              </a>
+              <a href="#" class="act" aria-label="Twitter">
+                <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              <a href="#" class="act" aria-label="Mail">
+                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>© <span id="yr"></span> BOOK//SHELF — локальный архив</div>
+    <div class="foot-links">
+      <a href="#catalog">catalog</a>
+      <a href="#philosophy">philosophy</a>
+      <a href="#contact">contact</a>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h3>добавить книгу</h3>
+        <p>новая запись в каталоге</p>
+      </div>
+      <button class="x" id="mclose" aria-label="Закрыть">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <form id="aform" novalidate>
+      <div class="field">
+        <label for="ft">название *</label>
+        <input id="ft" maxlength="120" required autocomplete="off">
+        <div class="err-msg" id="et">введите название</div>
+      </div>
+      <div class="field">
+        <label for="fa">автор *</label>
+        <input id="fa" maxlength="100" required autocomplete="off">
+        <div class="err-msg" id="ea">введите автора</div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="fy">год</label>
+          <input id="fy" type="number" min="-2000" max="2100" placeholder="—">
+          <div class="hint">необязательно</div>
+        </div>
+        <div class="field">
+          <label for="fg">жанр *</label>
+          <select id="fg" required>
+            <option value="" disabled selected>—</option>
+          </select>
+          <div class="err-msg" id="eg">выберите жанр</div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn" id="mcancel">отмена</button>
+        <button type="submit" class="btn btn-neon">+ добавить</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+/* ═══════════════ ДАННЫЕ (сокращено до 20 книг) ═══════════════ */
+const BASE = [
+  {id:1,title:"Преступление и наказание",author:"Фёдор Достоевский",year:1866,genre:"классика"},
+  {id:2,title:"Мастер и Маргарита",author:"Михаил Булгаков",year:1967,genre:"классика"},
+  {id:3,title:"1984",author:"Джордж Оруэлл",year:1949,genre:"антиутопия"},
+  {id:4,title:"Мы",author:"Евгений Замятин",year:1924,genre:"антиутопия"},
+  {id:5,title:"Дюна",author:"Фрэнк Герберт",year:1965,genre:"фантастика"},
+  {id:6,title:"Солярис",author:"Станислав Лем",year:1961,genre:"фантастика"},
+  {id:7,title:"Пикник на обочине",author:"Аркадий и Борис Стругацкие",year:1972,genre:"фантастика"},
+  {id:8,title:"451° по Фаренгейту",author:"Рэй Брэдбери",year:1953,genre:"антиутопия"},
+  {id:9,title:"Убийство в «Восточном экспрессе»",author:"Агата Кристи",year:1934,genre:"детектив"},
+  {id:10,title:"Шерлок Холмс: собрание",author:"Артур Конан Дойл",year:1887,genre:"детектив"},
+  {id:11,title:"Sapiens: Краткая история человечества",author:"Юваль Ной Харари",year:2011,genre:"нонфикшн"},
+  {id:12,title:"Краткая история времени",author:"Стивен Хокинг",year:1988,genre:"нонфикшн"},
+  {id:13,title:"Думай медленно, решай быстро",author:"Даниэль Канеман",year:2011,genre:"нонфикшн"},
+  {id:14,title:"Евгений Онегин",author:"Александр Пушкин",year:1833,genre:"поэзия"},
+  {id:15,title:"Стихи о Прекрасной Даме",author:"Александр Блок",year:1904,genre:"поэзия"},
+  {id:16,title:"Так говорил Заратустра",author:"Фридрих Ницше",year:1883,genre:"философия"},
+  {id:17,title:"Посторонний",author:"Альбер Камю",year:1942,genre:"философия"},
+  {id:18,title:"Государство",author:"Платон",year:-380,genre:"философия"},
+  {id:19,title:"Стив Джобс",author:"Уолтер Айзексон",year:2011,genre:"биография"},
+  {id:20,title:"Леонардо да Винчи",author:"Уолтер Айзексон",year:2017,genre:"биография"}
+];
+
+const SEED_READ = [1,2,3,5,6,8,11,12,14,16];
+const SEED_LIKE = [2,3,5,7,11];
+
+/* ═══════════════ СОСТОЯНИЕ ═══════════════ */
+let userBooks = [];
+try { userBooks = JSON.parse(localStorage.getItem('bs_user') || '[]'); } catch(e){}
+let data = [...BASE, ...userBooks];
+
+let state = null;
+try { state = JSON.parse(localStorage.getItem('bs_state') || 'null'); } catch(e){}
+if (!state){
+  state = {};
+  data.forEach(b => state[b.id] = { read: SEED_READ.includes(b.id), liked: SEED_LIKE.includes(b.id) });
+  saveState();
+}
+
+function saveState(){ localStorage.setItem('bs_state', JSON.stringify(state)); }
+function saveUser(){ localStorage.setItem('bs_user', JSON.stringify(userBooks)); }
+function getSt(id){ return state[id] || {read:false, liked:false}; }
+
+const PER = 10;
+let page = 1;
+let fGenre = 'all';
+let fStatus = 'all';
+
+/* ═══════════════ УТИЛИТЫ ═══════════════ */
+const $ = s => document.querySelector(s);
+const genres = () => [...new Set(data.map(b => b.genre))].sort();
+const nextId = () => Math.max(1000, ...data.map(b => b.id)) + 1;
+
+/* ═══════════════ РЕНДЕР ФИЛЬТРОВ ЖАНРОВ ═══════════════ */
+function renderGenreFilters(){
+  const row = document.querySelector('.filters');
+  row.querySelectorAll('[data-genre]:not([data-genre="all"])').forEach(el => el.remove());
+  const allBtn = row.querySelector('[data-genre="all"]');
+  genres().forEach(g => {
+    const b = document.createElement('button');
+    b.className = 'tag-btn' + (g === fGenre ? ' on' : '');
+    b.dataset.genre = g;
+    b.textContent = g;
+    b.addEventListener('click', () => { fGenre = g; page = 1; syncUI(); render(); });
+    allBtn.insertAdjacentElement('afterend', b);
+  });
+  allBtn.classList.toggle('on', fGenre === 'all');
+}
+
+/* ═══════════════ ФИЛЬТРАЦИЯ ═══════════════ */
+function filtered(){
+  return data.filter(b => {
+    if (fGenre !== 'all' && b.genre !== fGenre) return false;
+    const s = getSt(b.id);
+    if (fStatus === 'read' && !s.read) return false;
+    if (fStatus === 'like' && !s.liked) return false;
+    if (fStatus === 'unread' && s.read) return false;
+    if (fStatus === 'mine' && b.id < 1000) return false;
+    return true;
+  });
+}
+
+/* ═══════════════ РЕНДЕР СПИСКА ═══════════════ */
+function render(){
+  const list = filtered();
+  const pages = Math.max(1, Math.ceil(list.length / PER));
+  if (page > pages) page = pages;
+  const slice = list.slice((page-1)*PER, page*PER);
+  const el = $('#list');
+  el.innerHTML = '';
+
+  if (!slice.length){
+    el.innerHTML = `<div class="empty"><strong>// ничего не найдено</strong>попробуйте изменить фильтры или добавьте книгу</div>`;
+  } else {
+    slice.forEach((b, i) => {
+      const s = getSt(b.id);
+      const mine = b.id >= 1000;
+      const idx = (page-1)*PER + i + 1;
+      const yr = b.year < 0 ? Math.abs(b.year)+' до н.э.' : (b.year || '—');
+
+      const item = document.createElement('article');
+      item.className = 'book' + (s.read ? ' read' : '');
+      item.style.animationDelay = (i * 0.025) + 's';
+
+      let tags = '';
+      if (s.read) tags += '<span class="mtag ok">read</span>';
+      if (s.liked) tags += '<span class="mtag rose">liked</span>';
+      if (mine) tags += '<span class="mtag mine">mine</span>';
+
+      item.innerHTML = `
+        <div class="book-idx">${String(idx).padStart(3,'0')}</div>
+        <div class="book-main">
+          <div class="book-title" title="${b.title}">${b.title}</div>
+          <div class="book-author">
+            <span>${b.author}</span>
+            <span class="sep">·</span>
+            <span class="yr">${yr}</span>
+            <span class="sep">·</span>
+            <span class="gn">${b.genre}</span>
+          </div>
+          ${tags ? `<div class="book-tags">${tags}</div>` : ''}
+        </div>
+        <div class="book-actions">
+          <button class="act like ${s.liked?'on':''}" data-id="${b.id}" data-act="like" title="избранное">
+            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </button>
+          <button class="act read ${s.read?'on':''}" data-id="${b.id}" data-act="read" title="прочитано">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </button>
+          ${mine ? `
+          <button class="act del" data-id="${b.id}" data-act="del" title="удалить">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          </button>` : ''}
+        </div>`;
+      el.appendChild(item);
+    });
+  }
+
+  $('#found').textContent = list.length;
+  renderPager(pages);
+  updateNums();
+}
+
+/* ═══════════════ ПАГИНАЦИЯ ═══════════════ */
+function renderPager(total){
+  const p = $('#pager');
+  p.innerHTML = '';
+  if (total <= 1) return;
+
+  const mk = (html, pg, nav=false, dis=false) => {
+    const b = document.createElement('button');
+    b.className = 'pg' + (!nav && pg === page ? ' on' : '');
+    b.innerHTML = html;
+    b.disabled = dis;
+    if (!dis) b.addEventListener('click', () => {
+      page = pg; render();
+      document.getElementById('catalog').scrollIntoView({behavior:'smooth'});
+    });
+    return b;
+  };
+
+  p.appendChild(mk('←', page-1, true, page===1));
+
+  const nums = [];
+  if (total <= 7){ for(let i=1;i<=total;i++) nums.push(i); }
+  else {
+    nums.push(1);
+    if (page > 3) nums.push('…');
+    for(let i=Math.max(2,page-1); i<=Math.min(total-1,page+1); i++) nums.push(i);
+    if (page < total-2) nums.push('…');
+    nums.push(total);
+  }
+  nums.forEach(n => {
+    if (n === '…'){
+      const s = document.createElement('span');
+      s.className = 'dots'; s.textContent = '…'; p.appendChild(s);
+    } else p.appendChild(mk(n, n));
+  });
+
+  p.appendChild(mk('→', page+1, true, page===total));
+}
+
+/* ═══════════════ СЧЁТЧИКИ ═══════════════ */
+function updateNums(){
+  const r = data.filter(b => getSt(b.id).read).length;
+  const l = data.filter(b => getSt(b.id).liked).length;
+  const m = data.filter(b => b.id >= 1000).length;
+  $('#n-read').textContent = r;
+  $('#n-like').textContent = l;
+  $('#n-mine').textContent = m;
+  $('#s-total').textContent = data.length;
+  $('#s-read').textContent = r;
+  $('#s-like').textContent = l;
+  $('#s-mine').textContent = m;
+}
+
+/* ═══════════════ ЧИПЫ СТАТУСА ═══════════════ */
+document.querySelectorAll('[data-status]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    fStatus = btn.dataset.status;
+    page = 1;
+    syncUI();
+    render();
+  });
+});
+
+function syncUI(){
+  document.querySelectorAll('[data-genre]').forEach(b => b.classList.toggle('on', b.dataset.genre === fGenre));
+  document.querySelectorAll('[data-status]').forEach(b => b.classList.toggle('on', b.dataset.status === fStatus));
+}
+
+/* ═══════════════ ДЕЙСТВИЯ ═══════════════ */
+$('#list').addEventListener('click', e => {
+  const btn = e.target.closest('.act');
+  if (!btn) return;
+  e.stopPropagation();
+  const id = +btn.dataset.id;
+  const act = btn.dataset.act;
+  if (!state[id]) state[id] = {read:false, liked:false};
+
+  if (act === 'like'){ state[id].liked = !state[id].liked; saveState(); render(); }
+  if (act === 'read'){ state[id].read = !state[id].read; saveState(); render(); }
+  if (act === 'del'){
+    if (!confirm('Удалить книгу?')) return;
+    userBooks = userBooks.filter(b => b.id !== id);
+    data = data.filter(b => b.id !== id);
+    delete state[id];
+    saveUser(); saveState();
+    renderGenreFilters(); render();
+  }
+});
+
+$('#reset').addEventListener('click', () => {
+  fGenre = 'all'; fStatus = 'all'; page = 1;
+  syncUI(); render();
+});
+
+/* ═══════════════ МОДАЛКА ═══════════════ */
+const modal = $('#modal');
+const aform = $('#aform');
+const fg = $('#fg');
+
+function openModal(){
+  fg.innerHTML = '<option value="" disabled selected>—</option>';
+  genres().forEach(g => {
+    const o = document.createElement('option');
+    o.value = g; o.textContent = g;
+    fg.appendChild(o);
+  });
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => $('#ft').focus(), 150);
+}
+
+function closeModal(){
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+  aform.reset();
+  clearErr();
+}
+
+function clearErr(){
+  aform.querySelectorAll('.err').forEach(el => el.classList.remove('err'));
+  aform.querySelectorAll('.err-msg').forEach(el => el.classList.remove('show'));
+}
+
+$('#open-add').addEventListener('click', openModal);
+$('#mclose').addEventListener('click', closeModal);
+$('#mcancel').addEventListener('click', closeModal);
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+});
+
+aform.addEventListener('submit', e => {
+  e.preventDefault();
+  clearErr();
+
+  const title = $('#ft').value.trim();
+  const author = $('#fa').value.trim();
+  const yearRaw = $('#fy').value.trim();
+  const genre = fg.value;
+
+  let ok = true;
+  if (!title){ $('#ft').classList.add('err'); $('#et').classList.add('show'); ok = false; }
+  if (!author){ $('#fa').classList.add('err'); $('#ea').classList.add('show'); ok = false; }
+  if (!genre){ fg.classList.add('err'); $('#eg').classList.add('show'); ok = false; }
+  if (!ok) return;
+
+  const book = {
+    id: nextId(),
+    title, author,
+    year: yearRaw === '' ? null : parseInt(yearRaw, 10),
+    genre
+  };
+
+  userBooks.push(book);
+  data.push(book);
+  state[book.id] = {read:false, liked:false};
+
+  saveUser(); saveState();
+  renderGenreFilters();
+
+  fGenre = 'all'; fStatus = 'all'; page = 1;
+  syncUI();
+  render();
+  closeModal();
+
+  setTimeout(() => {
+    document.getElementById('catalog').scrollIntoView({behavior:'smooth'});
+    const el = document.querySelector(`[data-id="${book.id}"]`)?.closest('.book');
+    if (el){
+      el.style.transition = 'background .3s';
+      el.style.background = 'rgba(198,255,61,.06)';
+      el.style.paddingLeft = '1.25rem';
+      setTimeout(() => {
+        el.style.background = '';
+        el.style.paddingLeft = '';
+      }, 2200);
+    }
+  }, 250);
+});
+
+/* ═══════════════ ФОРМА КОНТАКТОВ ═══════════════ */
+const cform = $('#cform');
+const okmsg = $('#okmsg');
+cform.addEventListener('submit', e => {
+  e.preventDefault();
+  const btn = cform.querySelector('button[type="submit"]');
+  const txt = btn.textContent;
+  btn.textContent = '→ отправка...'; btn.disabled = true;
+  setTimeout(() => {
+    cform.style.display = 'none';
+    okmsg.classList.add('show');
+    btn.textContent = txt; btn.disabled = false;
+    cform.reset();
+  }, 1000);
+});
+function resetForm(){
+  okmsg.classList.remove('show');
+  cform.style.display = '';
+}
+
+/* ═══════════════ МОБИЛЬНОЕ МЕНЮ ═══════════════ */
+const burger = document.querySelector('.burger');
+const nav = document.querySelector('.nav');
+let open = false;
+burger.addEventListener('click', () => {
+  open = !open;
+  nav.classList.toggle('open', open);
+  burger.setAttribute('aria-expanded', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  if (open){ open = false; nav.classList.remove('open'); document.body.style.overflow = ''; }
+}));
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 768 && open){
+    open = false; nav.classList.remove('open'); document.body.style.overflow = '';
+  }
+});
+
+/* ═══════════════ АКТИВНАЯ ССЫЛКА ПРИ СКРОЛЛЕ ═══════════════ */
+const secs = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  secs.forEach(s => { if (pageYOffset >= s.offsetTop - 100) cur = s.id; });
+  navLinks.forEach(a => a.classList.toggle('on', a.getAttribute('href').includes(cur)));
+}, {passive: true});
+
+/* ═══════════════ СТАРТ ═══════════════ */
+$('#yr').textContent = new Date().getFullYear();
+renderGenreFilters();
+syncUI();
+render();
+</script>
+</body>
+</html>
