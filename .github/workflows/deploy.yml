@@ -19,24 +19,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      # ШАГ 1: Проверка HTML (Линтинг)
-      - name: Lint HTML
-        uses: htmlhint/htmlhint-action@v1
+      # Шаг 1: Устанавливаем Node.js (нужен для линтера)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          args: "--config .htmlhintrc"
-        continue-on-error: false # Если найдет ошибки - остановит деплой
-
-      # ШАГ 2: Подготовка GitHub Pages
+          node-version: '20'
+          
+      # Шаг 2: Запускаем проверку HTML
+      - name: Lint HTML
+        run: npx htmlhint index.html
+          
       - name: Setup Pages
         uses: actions/configure-pages@v5
       
-      # ШАГ 3: Упаковка файлов
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
       
-      # ШАГ 4: Публикация
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
